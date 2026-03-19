@@ -88,12 +88,25 @@ impl CommandProvider for BuiltinProvider {
             score: 0,
         });
 
+        cmds.push(CommandEntry {
+            id: "system.settings".into(),
+            name: "Emit Settings".into(),
+            description: "Configure Emit preferences".into(),
+            category: "System".into(),
+            icon: None,
+            match_indices: vec![],
+            score: 0,
+        });
+
         cmds
     }
 
     fn execute(&self, id: &str) -> Option<Result<String, String>> {
         if id == "system.marketplace" {
             return Some(Ok("view:marketplace".into()));
+        }
+        if id == "system.settings" {
+            return Some(Ok("view:settings".into()));
         }
 
         let (_, _, _, cmd, args) = SYSTEM_COMMANDS.iter().find(|(cid, ..)| *cid == id)?;

@@ -112,4 +112,6 @@ jobs:
           releaseBody: "Emit v${{ needs.version-bump.outputs.version }}"
           releaseDraft: false
           prerelease: false
+          includeUpdaterJson: true
+          updaterJsonPreferNewer: true
           args: --target ${{ matrix.target }}

@@ -170,6 +170,9 @@ export function App() {
       } else if (result === "view:password-generator") {
         setQuery("");
         setView("password-generator");
+      } else if (result === "view:settings") {
+        setQuery("");
+        setView("settings");
       } else if (result === "view:window-manager") {
         setQuery("");
         setView("window-manager");
@@ -263,6 +266,7 @@ export function App() {
       view === "color-picker" ||
       view === "password-generator" ||
       view === "window-manager" ||
+      view === "settings" ||
       view === "param-wizard" ||
       mode === "command",
   });
@@ -424,6 +428,8 @@ export function App() {
             ? "Filter history\u2026"
             : view === "window-manager"
               ? "Search windows\u2026"
+              : view === "settings"
+                ? "Search settings\u2026"
             : mode === "command"
               ? "Type a command..."
               : "Search for apps and commands...";
@@ -431,9 +437,7 @@ export function App() {
   return (
     <div className={`app-wrapper ${visible ? "app-visible" : "app-hidden"}`}>
       <div className="app-shell">
-        {view === "settings" ? (
-          <Settings onBack={handleBack} />
-        ) : view === "marketplace" ? (
+        {view === "marketplace" ? (
           <Marketplace
             onBack={handleBack}
             onExtensionClick={(id) => {
@@ -467,7 +471,7 @@ export function App() {
               placeholder={placeholder}
               readOnly={view === "param-wizard"}
               onBack={
-                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager"
+                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager" || view === "settings"
                   ? handleBack
                   : view === "param-wizard"
                     ? handleWizardBack
@@ -522,6 +526,11 @@ export function App() {
                 onBack={handleBack}
                 onTrailingChange={setSearchTrailing}
                 onQueryChange={setQuery}
+              />
+            ) : view === "settings" ? (
+              <Settings
+                filter={query}
+                onBack={handleBack}
               />
             ) : isCommandMode ? (
               <>
@@ -595,7 +604,7 @@ export function App() {
                   )}
                 </div>
                 <Footer
-                  onSettingsClick={() => setView("settings")}
+                  onSettingsClick={() => { setQuery(""); setView("settings"); }}
                   onMarketplaceClick={() => {
                     setQuery("");
                     setView("marketplace");
