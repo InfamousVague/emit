@@ -1,3 +1,5 @@
+//! Window management extension — snap windows to screen zones with dock/menu bar awareness.
+
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
