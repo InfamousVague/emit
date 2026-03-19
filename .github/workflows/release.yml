@@ -113,5 +113,4 @@ jobs:
           releaseDraft: false
           prerelease: false
           includeUpdaterJson: true
-          updaterJsonPreferNewer: true
           args: --target ${{ matrix.target }}
