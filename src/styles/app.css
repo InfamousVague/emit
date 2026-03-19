@@ -3,6 +3,8 @@
   border-radius: var(--radius-xl);
   background: var(--color-gradient-border);
   transform-origin: center top;
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
 }
 
 .app-wrapper.app-visible {
@@ -16,7 +18,7 @@
 @keyframes emit-show {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(1.03);
   }
   to {
     opacity: 1;
@@ -31,14 +33,12 @@
   }
   to {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.97);
   }
 }
 
 .app-shell {
   background: var(--color-bg-primary);
-  backdrop-filter: var(--blur-glass);
-  -webkit-backdrop-filter: var(--blur-glass);
   border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
