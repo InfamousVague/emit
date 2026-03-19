@@ -7,6 +7,7 @@ import "./Settings.css";
 interface SettingsProps {
   filter: string;
   onBack: () => void;
+  onCheckForUpdates?: () => void;
 }
 
 interface SettingDef {
@@ -30,7 +31,7 @@ function substringIndices(text: string, query: string): number[] {
   return Array.from({ length: query.length }, (_, i) => idx + i);
 }
 
-export function Settings({ filter, onBack }: SettingsProps) {
+export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
   const [settings, setSettings] = useState<SettingsType | null>(null);
 
   useEffect(() => {
@@ -67,7 +68,16 @@ export function Settings({ filter, onBack }: SettingsProps) {
       case "show_in_dock":
         return <Toggle checked={settings.show_in_dock} onChange={(v) => update({ show_in_dock: v })} />;
       case "check_for_updates":
-        return <Toggle checked={settings.check_for_updates} onChange={(v) => update({ check_for_updates: v })} />;
+        return (
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-sm)" }}>
+            {onCheckForUpdates && (
+              <button className="settings-action-btn" onClick={onCheckForUpdates}>
+                Check Now
+              </button>
+            )}
+            <Toggle checked={settings.check_for_updates} onChange={(v) => update({ check_for_updates: v })} />
+          </div>
+        );
       case "max_results":
         return (
           <Select

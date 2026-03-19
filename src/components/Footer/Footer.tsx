@@ -1,4 +1,5 @@
-import { Gear, PuzzlePiece } from "@phosphor-icons/react";
+import { Gear, PuzzlePiece, Power } from "@phosphor-icons/react";
+import { exit } from "@tauri-apps/plugin-process";
 import { Button, Kbd } from "../../ui";
 import "./Footer.css";
 
@@ -22,6 +23,9 @@ export function Footer({ onSettingsClick, onMarketplaceClick }: FooterProps) {
             <PuzzlePiece size={12} weight="regular" /> Extensions
           </Button>
         )}
+        <Button variant="ghost" size="sm" onClick={() => exit(0)}>
+          <Power size={12} weight="regular" /> Quit
+        </Button>
       </div>
       <div className="footer-actions">
         <Kbd>{"\u2191\u2193"}</Kbd> <span>Navigate</span>

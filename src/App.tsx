@@ -27,6 +27,7 @@ import {
   searchCommands,
   wmSnapFocused,
 } from "./lib/tauri";
+import { exit } from "@tauri-apps/plugin-process";
 import { groupByCategory } from "./lib/groupByCategory";
 import type {
   CommandDefinition,
@@ -152,6 +153,18 @@ export function App() {
     return () => unlisten?.();
   }, []);
 
+  // Global Cmd+Q to quit
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "q" && e.metaKey) {
+        e.preventDefault();
+        exit(0);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
   const handleExecute = useCallback(
     async (id: string) => {
       const result = await executeCommand(id);
@@ -271,7 +284,7 @@ export function App() {
       mode === "command",
   });
 
-  const { update, installUpdate, dismissUpdate } = useAutoUpdate();
+  const { update, installUpdate, dismissUpdate, checkNow } = useAutoUpdate();
 
   const groups = useMemo(() => groupByCategory(results), [results]);
 
@@ -531,6 +544,7 @@ export function App() {
               <Settings
                 filter={query}
                 onBack={handleBack}
+                onCheckForUpdates={checkNow}
               />
             ) : isCommandMode ? (
               <>

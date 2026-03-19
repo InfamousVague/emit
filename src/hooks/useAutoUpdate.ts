@@ -14,6 +14,7 @@ export interface UseAutoUpdateReturn {
   update: UpdateState;
   installUpdate: () => Promise<void>;
   dismissUpdate: () => void;
+  checkNow: () => Promise<void>;
 }
 
 const POLL_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
@@ -82,5 +83,23 @@ export function useAutoUpdate(): UseAutoUpdateReturn {
     setState((prev) => ({ ...prev, dismissed: true }));
   };
 
-  return { update: state, installUpdate, dismissUpdate };
+  const checkNow = async () => {
+    if (updateRef.current) return;
+    try {
+      const update = await check();
+      if (update) {
+        updateRef.current = update;
+        setState((prev) => ({
+          ...prev,
+          available: true,
+          version: update.version,
+          dismissed: false,
+        }));
+      }
+    } catch (e) {
+      console.warn("Update check failed:", e);
+    }
+  };
+
+  return { update: state, installUpdate, dismissUpdate, checkNow };
 }
