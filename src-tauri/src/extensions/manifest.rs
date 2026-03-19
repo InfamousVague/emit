@@ -54,5 +54,15 @@ pub fn all_manifests() -> Vec<ExtensionManifest> {
             default_enabled: true,
             has_settings: false,
         },
+        ExtensionManifest {
+            id: "screenshot".into(),
+            name: "Screenshot".into(),
+            description: "Capture windows and manage screenshots".into(),
+            icon: "Camera".into(),
+            category: "Utilities".into(),
+            bundled: true,
+            default_enabled: true,
+            has_settings: false,
+        },
     ]
 }

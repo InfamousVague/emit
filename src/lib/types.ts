@@ -14,6 +14,7 @@ export interface Settings {
   show_in_dock: boolean;
   max_results: number;
   check_for_updates: boolean;
+  replace_spotlight: boolean;
 }
 
 export interface ClipboardMetadata {
@@ -150,6 +151,18 @@ export type SnapPosition =
   | "RightTwoThirds"
   | "Maximize"
   | "Center";
+
+// --- Screenshot Types ---
+
+export interface ScreenshotItem {
+  id: string;
+  path: string;
+  thumbnail_path: string;
+  timestamp: number;
+  width: number;
+  height: number;
+  source_app: string | null;
+}
 
 // --- Command System Types ---
 

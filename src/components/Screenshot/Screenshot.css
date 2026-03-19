@@ -1,0 +1,210 @@
+.screenshot {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.screenshot-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* ── Capture option rows ── */
+
+.screenshot-options {
+  margin-bottom: var(--space-sm);
+}
+
+.screenshot-option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+}
+
+.screenshot-option-row:hover {
+  background: var(--color-bg-hover);
+}
+
+.screenshot-option-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.screenshot-option-icon {
+  color: var(--color-text-icon);
+  flex-shrink: 0;
+}
+
+.screenshot-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.screenshot-option-label {
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.screenshot-option-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ── Section label ── */
+
+.screenshot-section-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-sm) var(--space-lg);
+}
+
+/* ── Gallery grid ── */
+
+.screenshot-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 0 var(--space-xs);
+}
+
+.screenshot-thumb {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 72px;
+  flex: 1 1 auto;
+  min-width: 50px;
+  max-width: 180px;
+}
+
+.screenshot-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.screenshot-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.screenshot-thumb:hover .screenshot-thumb-overlay {
+  opacity: 1;
+}
+
+.screenshot-thumb-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.screenshot-thumb-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.screenshot-thumb-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2px var(--space-xs);
+  background: rgba(0, 0, 0, 0.5);
+  font-size: 9px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Action buttons (shared) ── */
+
+.screenshot-action-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 4px 10px;
+  background: var(--color-bg-hover);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.screenshot-action-btn:hover {
+  background: var(--color-bg-active);
+  color: var(--color-text-primary);
+}
+
+/* ── Detail view ── */
+
+.screenshot-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  flex-shrink: 0;
+}
+
+.screenshot-detail-header-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.screenshot-detail {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.screenshot-detail-img {
+  width: 100%;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  max-height: 300px;
+  background: var(--color-bg-hover);
+}
+
+.screenshot-detail-info {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-xs);
+}

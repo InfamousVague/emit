@@ -289,3 +289,35 @@ export async function wmGetAppIcon(
 export async function wmGetScreenInfo(): Promise<ScreenInfo> {
   return invoke("wm_get_screen_info");
 }
+
+// --- Screenshot ---
+
+export async function screenshotCaptureRegion(): Promise<void> {
+  return invoke("screenshot_capture_region");
+}
+
+export async function screenshotCaptureWindow(): Promise<void> {
+  return invoke("screenshot_capture_window");
+}
+
+export async function screenshotCaptureScreen(): Promise<void> {
+  return invoke("screenshot_capture_screen");
+}
+
+export async function screenshotList(): Promise<
+  import("./types").ScreenshotItem[]
+> {
+  return invoke("screenshot_list");
+}
+
+export async function screenshotDelete(id: string): Promise<void> {
+  return invoke("screenshot_delete", { id });
+}
+
+export async function screenshotCopy(id: string): Promise<void> {
+  return invoke("screenshot_copy", { id });
+}
+
+export async function screenshotGetImage(path: string): Promise<string> {
+  return invoke("screenshot_get_image", { path });
+}
