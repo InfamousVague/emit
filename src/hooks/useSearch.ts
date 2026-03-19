@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import type { CommandEntry } from "../lib/types";
-import { search, searchStatic } from "../lib/tauri";
+import type { CommandEntry, Settings } from "../lib/types";
+import { getSettings, search, searchStatic } from "../lib/tauri";
 import { useCommandParser } from "./useCommandParser";
+import { SETTING_DEFS } from "../components/Settings/Settings";
 
 export type SearchMode = "search" | "command";
 
@@ -9,10 +10,54 @@ export type SearchMode = "search" | "command";
 const CATEGORY_PRIORITY: Record<string, number> = {
   Extensions: 0,
   System: 1,
-  Applications: 2,
-  Notion: 3,
-  Files: 4,
+  Settings: 2,
+  Applications: 3,
+  Notion: 4,
+  Files: 5,
 };
+
+const BOOLEAN_SETTING_KEYS = new Set([
+  "replace_spotlight",
+  "launch_at_login",
+  "show_in_dock",
+  "check_for_updates",
+]);
+
+function matchSettings(
+  query: string,
+  settings: Settings | null,
+): CommandEntry[] {
+  if (!query || !settings) return [];
+  const q = query.toLowerCase();
+  return SETTING_DEFS
+    .filter(
+      (s) =>
+        s.label.toLowerCase().includes(q) ||
+        s.description.toLowerCase().includes(q),
+    )
+    .map((s) => {
+      const idx = s.label.toLowerCase().indexOf(q);
+      const descIdx = s.description.toLowerCase().indexOf(q);
+      const matchStart = idx !== -1 ? idx : descIdx;
+      const isBool = BOOLEAN_SETTING_KEYS.has(s.key);
+      const currentValue = isBool
+        ? (settings[s.key as keyof Settings] ? "On" : "Off")
+        : null;
+      return {
+        id: `setting:${s.key}`,
+        name: s.label,
+        description: currentValue
+          ? `${s.description} · Currently: ${currentValue}`
+          : s.description,
+        category: "Settings",
+        icon: null,
+        match_indices: idx !== -1
+          ? Array.from({ length: q.length }, (_, i) => idx + i)
+          : [],
+        score: matchStart === 0 ? 100 : 50,
+      };
+    });
+}
 
 function categoryRank(category: string): number {
   return CATEGORY_PRIORITY[category] ?? 3;
@@ -26,6 +71,7 @@ const FILTER_PREFIXES: Record<string, string> = {
   "system:": "System",
   "ext:": "Extensions",
   "pw:": "PasswordGenerator",
+  "settings:": "Settings",
 };
 
 export function useSearch() {
@@ -37,6 +83,12 @@ export function useSearch() {
     undefined,
   );
   const dynamicRequestRef = useRef(0);
+  const [cachedSettings, setCachedSettings] = useState<Settings | null>(null);
+
+  // Load settings for injecting into search results
+  useEffect(() => {
+    getSettings().then(setCachedSettings);
+  }, []);
 
   const mode: SearchMode = query.startsWith("/") ? "command" : "search";
 
@@ -88,14 +140,25 @@ export function useSearch() {
         const filtered = filterCategory
           ? items.filter((r) => r.category === filterCategory)
           : items;
-        setResults(filtered);
+        // Inject matching settings into results
+        const settingsItems =
+          !filterCategory || filterCategory === "Settings"
+            ? matchSettings(searchQuery, cachedSettings)
+            : [];
+        const merged = [...filtered, ...settingsItems];
+        merged.sort((a, b) => {
+          const catDiff = categoryRank(a.category) - categoryRank(b.category);
+          if (catDiff !== 0) return catDiff;
+          return (b.score ?? 0) - (a.score ?? 0);
+        });
+        setResults(merged);
         setSelectedIndex(0);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [query, searchQuery, filterCategory]);
+  }, [query, searchQuery, filterCategory, cachedSettings]);
 
   // ── Debounced dynamic search ──────────────────────────────────────────
   useEffect(() => {
@@ -140,6 +203,10 @@ export function useSearch() {
     };
   }, [query, searchQuery, filterCategory]);
 
+  const refreshSettings = () => {
+    getSettings().then(setCachedSettings);
+  };
+
   return {
     query,
     setQuery,
@@ -152,5 +219,6 @@ export function useSearch() {
     filterCategory,
     filterPrefixLength,
     filterGhostText,
+    refreshSettings,
   };
 }
