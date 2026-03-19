@@ -11,6 +11,9 @@ import type {
   PasswordHistoryEntry,
   SelectOption,
   Settings,
+  ScreenInfo,
+  SnapPosition,
+  WindowInfo,
 } from "./types";
 
 export async function search(query: string): Promise<CommandEntry[]> {
@@ -250,4 +253,39 @@ export async function pwgenSetLockTimeout(secs: number): Promise<void> {
 
 export async function pwgenGetLockTimeout(): Promise<number> {
   return invoke("pwgen_get_lock_timeout");
+}
+
+// --- Window Management ---
+
+export async function wmCheckAccessibility(): Promise<boolean> {
+  return invoke("wm_check_accessibility");
+}
+
+export async function wmRequestAccessibility(): Promise<void> {
+  return invoke("wm_request_accessibility");
+}
+
+export async function wmListWindows(): Promise<WindowInfo[]> {
+  return invoke("wm_list_windows");
+}
+
+export async function wmSnapWindow(
+  windowId: number,
+  position: SnapPosition,
+): Promise<void> {
+  return invoke("wm_snap_window", { windowId, position });
+}
+
+export async function wmSnapFocused(position: SnapPosition): Promise<void> {
+  return invoke("wm_snap_focused", { position });
+}
+
+export async function wmGetAppIcon(
+  appName: string,
+): Promise<string | null> {
+  return invoke("wm_get_app_icon", { appName });
+}
+
+export async function wmGetScreenInfo(): Promise<ScreenInfo> {
+  return invoke("wm_get_screen_info");
 }

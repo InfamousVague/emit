@@ -5,3 +5,4 @@ pub mod notion;
 pub mod password_generator;
 pub mod registry;
 pub mod vault_crypto;
+pub mod window_management;

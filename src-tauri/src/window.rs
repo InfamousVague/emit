@@ -6,11 +6,29 @@
 use tauri::{AppHandle, Manager};
 
 /// Toggle the main window's visibility. If hidden, shows + centers + focuses.
+/// Before showing, captures the currently focused window for window management.
 pub fn toggle(app: &AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
         if window.is_visible().unwrap_or(false) {
             let _ = window.hide();
         } else {
+            // Capture the frontmost window before Emit takes focus
+            #[cfg(target_os = "macos")]
+            {
+                use crate::extensions::window_management::SharedWmState;
+                if let Some(wm_state) = app.try_state::<SharedWmState>() {
+                    if let Some((pid, wid)) =
+                        crate::extensions::window_management::macos::capture_last_focused()
+                    {
+                        let wm_state = wm_state.inner().clone();
+                        tauri::async_runtime::spawn(async move {
+                            let mut state = wm_state.write().await;
+                            state.last_focused_pid = Some(pid);
+                            state.last_focused_window_id = Some(wid);
+                        });
+                    }
+                }
+            }
             show(&window);
         }
     }

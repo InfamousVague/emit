@@ -41,6 +41,9 @@ sha1 = "0.10"
 rand = "0.8"
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2 = "0.6"
-objc2-foundation = { version = "0.3", features = ["NSObject", "NSString", "NSData", "NSDictionary"] }
-objc2-app-kit = { version = "0.3", features = ["NSApplication", "NSRunningApplication", "NSColorSampler", "NSColor", "NSColorSpace", "NSPasteboard", "NSImage", "NSBitmapImageRep", "NSWorkspace", "NSGraphicsContext"] }
+objc2-foundation = { version = "0.3", features = ["NSObject", "NSString", "NSData", "NSDictionary", "NSArray"] }
+objc2-app-kit = { version = "0.3", features = ["NSApplication", "NSRunningApplication", "NSColorSampler", "NSColor", "NSColorSpace", "NSPasteboard", "NSImage", "NSBitmapImageRep", "NSWorkspace", "NSGraphicsContext", "NSScreen"] }
 block2 = "0.6"
+core-graphics = "0.24"
+core-graphics-types = "0.2"
+core-foundation = "0.10"

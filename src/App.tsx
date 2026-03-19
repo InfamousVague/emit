@@ -7,6 +7,7 @@ import { Settings } from "./components/Settings/Settings";
 import { ClipboardManager } from "./components/ClipboardManager/ClipboardManager";
 import { ColorPicker } from "./components/ColorPicker/ColorPicker";
 import { PasswordGenerator } from "./components/PasswordGenerator/PasswordGeneratorView";
+import { WindowManager } from "./components/WindowManager/WindowManager";
 import { Marketplace } from "./components/Marketplace/Marketplace";
 import { ExtensionDetail } from "./components/Marketplace/ExtensionDetail";
 import { NotionView } from "./components/NotionView/NotionView";
@@ -24,6 +25,7 @@ import {
   hideWindow,
   resolveParamOptions,
   searchCommands,
+  wmSnapFocused,
 } from "./lib/tauri";
 import { groupByCategory } from "./lib/groupByCategory";
 import type {
@@ -43,9 +45,11 @@ type View =
   | "command"
   | "param-wizard"
   | "color-picker"
-  | "password-generator";
+  | "password-generator"
+  | "window-manager";
 
 export function App() {
+  const [visible, setVisible] = useState(true);
   const [view, setView] = useState<View>("search");
   const [searchTrailing, setSearchTrailing] = useState<React.ReactNode>(null);
   const [selectedExtensionId, setSelectedExtensionId] = useState("");
@@ -137,6 +141,17 @@ export function App() {
     commandParser.currentParamQuery,
   ]);
 
+  // Spotlight-style show/hide animation
+  useEffect(() => {
+    let unlisten: (() => void) | undefined;
+    import("@tauri-apps/api/webviewWindow").then(({ getCurrentWebviewWindow }) => {
+      getCurrentWebviewWindow().onFocusChanged(({ payload: focused }) => {
+        setVisible(focused);
+      }).then((fn) => { unlisten = fn; });
+    });
+    return () => unlisten?.();
+  }, []);
+
   const handleExecute = useCallback(
     async (id: string) => {
       const result = await executeCommand(id);
@@ -155,6 +170,25 @@ export function App() {
       } else if (result === "view:password-generator") {
         setQuery("");
         setView("password-generator");
+      } else if (result === "view:window-manager") {
+        setQuery("");
+        setView("window-manager");
+      } else if (result.startsWith("action:wm.snap.")) {
+        const position = result.replace("action:wm.snap.", "");
+        const posMap: Record<string, import("./lib/types").SnapPosition> = {
+          left_half: "LeftHalf", right_half: "RightHalf",
+          top_half: "TopHalf", bottom_half: "BottomHalf",
+          top_left: "TopLeftQuarter", top_right: "TopRightQuarter",
+          bottom_left: "BottomLeftQuarter", bottom_right: "BottomRightQuarter",
+          left_third: "LeftThird", center_third: "CenterThird", right_third: "RightThird",
+          left_two_thirds: "LeftTwoThirds", right_two_thirds: "RightTwoThirds",
+          maximize: "Maximize", center: "Center",
+        };
+        const snapPos = posMap[position];
+        if (snapPos) {
+          await wmSnapFocused(snapPos);
+        }
+        await hideWindow();
       } else {
         await hideWindow();
       }
@@ -228,6 +262,7 @@ export function App() {
       view === "notion" ||
       view === "color-picker" ||
       view === "password-generator" ||
+      view === "window-manager" ||
       view === "param-wizard" ||
       mode === "command",
   });
@@ -387,12 +422,14 @@ export function App() {
           ? "Palette name\u2026"
           : view === "password-generator"
             ? "Filter history\u2026"
+            : view === "window-manager"
+              ? "Search windows\u2026"
             : mode === "command"
               ? "Type a command..."
               : "Search for apps and commands...";
 
   return (
-    <div className="app-wrapper">
+    <div className={`app-wrapper ${visible ? "app-visible" : "app-hidden"}`}>
       <div className="app-shell">
         {view === "settings" ? (
           <Settings onBack={handleBack} />
@@ -430,7 +467,7 @@ export function App() {
               placeholder={placeholder}
               readOnly={view === "param-wizard"}
               onBack={
-                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator"
+                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager"
                   ? handleBack
                   : view === "param-wizard"
                     ? handleWizardBack
@@ -478,6 +515,13 @@ export function App() {
                 filter={query}
                 onBack={handleBack}
                 onTrailingChange={setSearchTrailing}
+              />
+            ) : view === "window-manager" ? (
+              <WindowManager
+                filter={query}
+                onBack={handleBack}
+                onTrailingChange={setSearchTrailing}
+                onQueryChange={setQuery}
               />
             ) : isCommandMode ? (
               <>

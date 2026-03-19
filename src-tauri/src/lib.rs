@@ -17,6 +17,7 @@ use clipboard::ClipboardState;
 use extensions::color_picker::ColorPickerProvider;
 use extensions::notion::NotionProvider;
 use extensions::password_generator::{PasswordGeneratorProvider, SharedVaultSession, VaultSession};
+use extensions::window_management::{SharedWmState, WmState, WindowManagementProvider};
 use extensions::registry::ExtensionRegistry;
 use frecency::FrecencyTracker;
 use launcher::CommandRegistry;
@@ -68,6 +69,7 @@ pub fn run() {
             registry.register(Box::new(NotionProvider::new(Arc::clone(&ext_registry))));
             registry.register(Box::new(ColorPickerProvider::new()));
             registry.register(Box::new(PasswordGeneratorProvider::new()));
+            registry.register(Box::new(WindowManagementProvider::new()));
 
             let registry = Arc::new(RwLock::new(registry));
 
@@ -75,6 +77,10 @@ pub fn run() {
             let vault_session: SharedVaultSession =
                 Arc::new(RwLock::new(VaultSession::default()));
             app.manage(vault_session);
+
+            // Window management state (tracks last-focused window)
+            let wm_state: SharedWmState = Arc::new(RwLock::new(WmState::default()));
+            app.manage(wm_state);
             let registry_clone = Arc::clone(&registry);
 
             // Refresh cache + extract icons in the background
@@ -208,6 +214,14 @@ pub fn run() {
             extensions::password_generator::pwgen_copy_password,
             extensions::password_generator::pwgen_set_lock_timeout,
             extensions::password_generator::pwgen_get_lock_timeout,
+            // Window management
+            extensions::window_management::wm_check_accessibility,
+            extensions::window_management::wm_request_accessibility,
+            extensions::window_management::wm_list_windows,
+            extensions::window_management::wm_snap_window,
+            extensions::window_management::wm_snap_focused,
+            extensions::window_management::wm_get_app_icon,
+            extensions::window_management::wm_get_screen_info,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

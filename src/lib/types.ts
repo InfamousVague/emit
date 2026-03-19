@@ -101,6 +101,56 @@ export interface GeneratePasswordOpts {
   label?: string;
 }
 
+// --- Window Management Types ---
+
+export interface WindowBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface WindowInfo {
+  window_id: number;
+  app_name: string;
+  title: string;
+  bundle_id: string;
+  bounds: WindowBounds;
+  is_on_screen: boolean;
+  pid: number;
+}
+
+export interface ScreenInfo {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  visible_x: number;
+  visible_y: number;
+  visible_width: number;
+  visible_height: number;
+  dock_position: "left" | "bottom" | "right" | null;
+  is_primary: boolean;
+  menu_bar_height: number;
+}
+
+export type SnapPosition =
+  | "LeftHalf"
+  | "RightHalf"
+  | "TopHalf"
+  | "BottomHalf"
+  | "TopLeftQuarter"
+  | "TopRightQuarter"
+  | "BottomLeftQuarter"
+  | "BottomRightQuarter"
+  | "LeftThird"
+  | "CenterThird"
+  | "RightThird"
+  | "LeftTwoThirds"
+  | "RightTwoThirds"
+  | "Maximize"
+  | "Center";
+
 // --- Command System Types ---
 
 export type CommandCategory = "Read" | "Write";

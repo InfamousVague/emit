@@ -7,3 +7,5 @@ export { HighlightedText } from "./HighlightedText";
 export { CommandIcon } from "./CommandIcon";
 export { ActionBar } from "./ActionBar";
 export type { Action } from "./ActionBar";
+export { TabNav } from "./TabNav";
+export type { Tab } from "./TabNav";

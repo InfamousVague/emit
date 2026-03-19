@@ -111,3 +111,13 @@ fn read_as_data_uri(path: &Path) -> Option<String> {
     let encoded = base64::engine::general_purpose::STANDARD.encode(&bytes);
     Some(format!("data:image/png;base64,{encoded}"))
 }
+
+/// Look up a previously cached icon by app name.
+pub fn get_cached_icon(app_name: &str) -> Option<String> {
+    let path = cached_png_path(app_name);
+    if path.exists() {
+        read_as_data_uri(&path)
+    } else {
+        None
+    }
+}

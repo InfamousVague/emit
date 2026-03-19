@@ -44,5 +44,15 @@ pub fn all_manifests() -> Vec<ExtensionManifest> {
             default_enabled: true,
             has_settings: true,
         },
+        ExtensionManifest {
+            id: "window-management".into(),
+            name: "Window Management".into(),
+            description: "Snap and arrange windows with keyboard shortcuts".into(),
+            icon: "Browsers".into(),
+            category: "Utilities".into(),
+            bundled: true,
+            default_enabled: true,
+            has_settings: false,
+        },
     ]
 }
