@@ -33,6 +33,8 @@ export function useAutoUpdate(): UseAutoUpdateReturn {
     let intervalId: ReturnType<typeof setInterval>;
 
     async function checkOnce() {
+      // Skip update checks in dev mode — version mismatch always triggers false positives
+      if (import.meta.env.DEV) return;
       // Already found an update — skip further checks
       if (updateRef.current) return;
 
