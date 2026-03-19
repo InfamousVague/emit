@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  height: 100%;
+}
+
+/* Prevent macOS from dimming the window on focus loss */
+:root {
+  color-scheme: dark;
+}
+*:focus {
+  outline: none;
+}

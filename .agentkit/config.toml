@@ -1,0 +1,122 @@
+[project]
+name = "emit"
+description = ""
+project_type = "Monorepo"
+detected_languages = []
+team_size = "Solo"
+
+[commits]
+convention = "Angular"
+types = [
+    "feat",
+    "fix",
+    "refactor",
+    "test",
+    "docs",
+    "chore",
+    "build",
+    "ci",
+]
+scope_policy = "Required"
+branch_pattern = "{type}/{ticket}-{description}"
+enforcement = "Both"
+
+[commits.templates]
+pr_template = true
+bug_report = true
+feature_request = true
+custom_templates = []
+
+[agents]
+preset = "Standard"
+workflow = "Linear"
+default_model = "Opus"
+permission_model = "ProgressiveTrust"
+enable_teams = false
+
+[[agents.agents]]
+name = "architect"
+role = "Architect"
+model = "Opus"
+tools = [
+    "Read",
+    "Glob",
+    "Grep",
+    "Write",
+    "Edit",
+    "Bash",
+    "Agent",
+    "WebSearch",
+    "WebFetch",
+]
+trust_level = "Full"
+description = "Plans architecture, reviews designs, and creates implementation strategies"
+
+[[agents.agents]]
+name = "implementer"
+role = "Implementer"
+model = "Opus"
+tools = [
+    "Read",
+    "Glob",
+    "Grep",
+    "Write",
+    "Edit",
+    "Bash",
+]
+trust_level = "Trusted"
+description = "Writes production code following project standards and architectural plans"
+
+[[agents.agents]]
+name = "reviewer"
+role = "Reviewer"
+model = "Opus"
+tools = [
+    "Read",
+    "Glob",
+    "Grep",
+]
+trust_level = "New"
+description = "Reviews code changes for quality, security, and adherence to project standards"
+
+[[agents.agents]]
+name = "tester"
+role = "Tester"
+model = "Opus"
+tools = [
+    "Read",
+    "Glob",
+    "Grep",
+    "Write",
+    "Edit",
+    "Bash",
+]
+trust_level = "Trusted"
+description = "Writes and runs tests, validates coverage, and ensures quality gates pass"
+
+[[agents.agents]]
+name = "docs"
+role = "Docs"
+model = "Opus"
+tools = [
+    "Read",
+    "Glob",
+    "Grep",
+    "Write",
+    "Edit",
+]
+trust_level = "Verified"
+description = "Writes and updates documentation, READMEs, and inline code comments"
+
+[output]
+claude_md_style = "MinimalPointers"
+overwrite_policy = "SmartMerge"
+auto_gitignore_secrets = true
+
+[output.extra_files]
+commitlint = true
+husky = true
+editorconfig = false
+pr_template = true
+issue_templates = true
+gitignore_entries = true

@@ -5,7 +5,9 @@
   "identifier": "com.infamousvague.emit",
   "build": {
     "frontendDist": "../dist",
-    "devUrl": "http://localhost:1420"
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
   },
   "app": {
     "windows": [
@@ -24,8 +26,9 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'"
-    }
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,
@@ -40,8 +43,10 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "",
-      "endpoints": []
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEE0NTY3RTY0OTlCNDZFMUMKUldRY2JyU1paSDVXcEhnOWs3UVpQODY0SU9adzdOVm9mNDlmOGxSM2hRdDNsSjhibHNxeFNVcisK",
+      "endpoints": [
+        "https://github.com/InfamousVague/emit/releases/latest/download/latest.json"
+      ]
     }
   }
 }

@@ -1,0 +1,60 @@
+:root {
+  /* Background colors */
+  --color-bg-primary: rgba(5, 5, 5, 0.82);
+  --color-bg-hover: rgba(255, 255, 255, 0.03);
+  --color-bg-selected: rgba(255, 255, 255, 0.06);
+  --color-bg-kbd: rgba(255, 255, 255, 0.04);
+  --color-bg-icon: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+
+  /* Border colors */
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
+  --color-border-kbd: rgba(255, 255, 255, 0.06);
+  --color-border-icon: rgba(255, 255, 255, 0.05);
+  --color-border-selected: rgba(255, 255, 255, 0.05);
+
+  /* Text colors */
+  --color-text-primary: #f0f0f0;
+  --color-text-secondary: rgba(255, 255, 255, 0.35);
+  --color-text-tertiary: rgba(255, 255, 255, 0.25);
+  --color-text-muted: rgba(255, 255, 255, 0.28);
+  --color-text-icon: rgba(255, 255, 255, 0.35);
+  --color-text-kbd: rgba(255, 255, 255, 0.3);
+
+  /* Gradient border (Umbra glass style) */
+  --color-gradient-border: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(120, 120, 255, 0.07) 60%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 6px;
+  --space-md: 8px;
+  --space-lg: 10px;
+  --space-xl: 14px;
+  --space-2xl: 16px;
+  --space-3xl: 20px;
+  --space-4xl: 40px;
+
+  /* Font sizes */
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-md: 13px;
+  --font-size-lg: 16px;
+
+  /* Border radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 13px;
+
+  /* Effects */
+  --blur-glass: blur(16px) saturate(180%);
+
+  /* Transitions */
+  --transition-fast: 0.08s ease;
+  --transition-normal: 0.1s ease;
+}

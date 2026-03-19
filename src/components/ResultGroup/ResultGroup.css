@@ -1,0 +1,8 @@
+.result-section {
+  padding: var(--space-md) var(--space-md) var(--space-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

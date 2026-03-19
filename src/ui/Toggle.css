@@ -1,0 +1,45 @@
+@keyframes emit-toggle-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.emit-toggle {
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.emit-toggle.on {
+  background-image: linear-gradient(90deg, #8B5CF6, #EC4899, #3B82F6, #8B5CF6);
+  background-size: 300% 300%;
+  border-color: transparent;
+  animation: emit-toggle-gradient 12s ease infinite;
+}
+
+.emit-toggle:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.emit-toggle-thumb {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emit-toggle.on .emit-toggle-thumb {
+  transform: translateX(18px);
+}

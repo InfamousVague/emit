@@ -1,0 +1,130 @@
+.notion-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.notion-filters {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+  overflow-x: auto;
+}
+
+.notion-filter-select {
+  padding: 4px 8px;
+  background: var(--color-bg-hover);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.notion-filter-select:focus {
+  border-color: var(--color-accent-primary);
+}
+
+.notion-results {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.notion-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.notion-item:hover,
+.notion-item.selected {
+  background: var(--color-bg-hover);
+}
+
+.notion-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.notion-item-title {
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notion-item-meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+.notion-status-badge {
+  font-size: var(--font-size-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-icon);
+  border: 1px solid var(--color-border-icon);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.notion-empty {
+  padding: var(--space-2xl);
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.notion-saved-bar {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+  overflow-x: auto;
+}
+
+.notion-saved-chip {
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-hover);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-fast);
+}
+
+.notion-saved-chip:hover {
+  background: var(--color-bg-selected);
+}
+
+.notion-saved-chip.active {
+  background: var(--color-bg-selected);
+  border-color: var(--color-accent-primary);
+  color: var(--color-text-primary);
+}
+
+.notion-save-filter-btn {
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px dashed var(--color-border-subtle);
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.notion-save-filter-btn:hover {
+  border-color: var(--color-text-tertiary);
+}

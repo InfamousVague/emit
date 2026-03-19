@@ -1,0 +1,123 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: var(--space-xl) var(--space-2xl);
+  gap: var(--space-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.search-icon {
+  color: var(--color-text-icon);
+  flex-shrink: 0;
+}
+
+.search-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-text-icon);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.search-back:hover {
+  color: var(--color-text-primary);
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: -0.1px;
+  caret-color: #8B5CF6;
+  animation: caret-gradient 3s ease infinite;
+}
+
+/* When labels are present, hide native text — overlay renders styled version */
+.search-input-wrapper input.has-labels {
+  color: transparent;
+}
+
+.search-ghost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.search-ghost-hidden {
+  visibility: hidden;
+}
+
+@keyframes caret-gradient {
+  0% { caret-color: #8B5CF6; }
+  33% { caret-color: #EC4899; }
+  66% { caret-color: #3B82F6; }
+  100% { caret-color: #8B5CF6; }
+}
+
+.search-input-wrapper input::placeholder {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.search-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.search-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent, #6366f1);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Inline text overlay — renders typed text with label portions dimmed */
+.search-text-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  color: var(--color-text-primary);
+  white-space: pre;
+  overflow: hidden;
+}
+
+.search-label-dim {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
