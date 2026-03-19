@@ -12,6 +12,12 @@
   gap: var(--space-sm);
 }
 
+.footer-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
 .footer-label {
   font-size: var(--font-size-sm);
   font-weight: 600;
