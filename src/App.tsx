@@ -8,6 +8,7 @@ import { ClipboardManager } from "./components/ClipboardManager/ClipboardManager
 import { ColorPicker } from "./components/ColorPicker/ColorPicker";
 import { PasswordGenerator } from "./components/PasswordGenerator/PasswordGeneratorView";
 import { WindowManager } from "./components/WindowManager/WindowManager";
+import { Screenshot } from "./components/Screenshot/Screenshot";
 import { Marketplace } from "./components/Marketplace/Marketplace";
 import { ExtensionDetail } from "./components/Marketplace/ExtensionDetail";
 import { NotionView } from "./components/NotionView/NotionView";
@@ -22,8 +23,10 @@ import { useAutoUpdate } from "./hooks/useAutoUpdate";
 import {
   executeAction,
   executeCommand,
+  getSettings,
   hideWindow,
   resolveParamOptions,
+  saveSettings,
   searchCommands,
   wmSnapFocused,
 } from "./lib/tauri";
@@ -47,10 +50,10 @@ type View =
   | "param-wizard"
   | "color-picker"
   | "password-generator"
-  | "window-manager";
+  | "window-manager"
+  | "screenshot";
 
 export function App() {
-  const [visible, setVisible] = useState(true);
   const [view, setView] = useState<View>("search");
   const [searchTrailing, setSearchTrailing] = useState<React.ReactNode>(null);
   const [selectedExtensionId, setSelectedExtensionId] = useState("");
@@ -66,6 +69,7 @@ export function App() {
     filterCategory,
     filterPrefixLength,
     filterGhostText,
+    refreshSettings,
   } = useSearch();
 
   // Command system state
@@ -143,15 +147,6 @@ export function App() {
   ]);
 
   // Spotlight-style show/hide animation
-  useEffect(() => {
-    let unlisten: (() => void) | undefined;
-    import("@tauri-apps/api/webviewWindow").then(({ getCurrentWebviewWindow }) => {
-      getCurrentWebviewWindow().onFocusChanged(({ payload: focused }) => {
-        setVisible(focused);
-      }).then((fn) => { unlisten = fn; });
-    });
-    return () => unlisten?.();
-  }, []);
 
   // Global Cmd+Q to quit
   useEffect(() => {
@@ -165,8 +160,28 @@ export function App() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
+  const BOOLEAN_SETTINGS = new Set([
+    "replace_spotlight",
+    "launch_at_login",
+    "show_in_dock",
+    "check_for_updates",
+  ]);
+
   const handleExecute = useCallback(
     async (id: string) => {
+      if (id.startsWith("setting:")) {
+        const key = id.replace("setting:", "");
+        if (BOOLEAN_SETTINGS.has(key)) {
+          const current = await getSettings();
+          const updated = { ...current, [key]: !current[key as keyof typeof current] };
+          await saveSettings(updated);
+          refreshSettings();
+          return;
+        }
+        setQuery("");
+        setView("settings");
+        return;
+      }
       const result = await executeCommand(id);
       if (result === "view:clipboard") {
         setQuery("");
@@ -189,6 +204,9 @@ export function App() {
       } else if (result === "view:window-manager") {
         setQuery("");
         setView("window-manager");
+      } else if (result === "view:screenshot") {
+        setQuery("");
+        setView("screenshot");
       } else if (result.startsWith("action:wm.snap.")) {
         const position = result.replace("action:wm.snap.", "");
         const posMap: Record<string, import("./lib/types").SnapPosition> = {
@@ -209,7 +227,7 @@ export function App() {
         await hideWindow();
       }
     },
-    [setView, setQuery],
+    [setView, setQuery, refreshSettings],
   );
 
   const handleCommandComplete = useCallback(
@@ -279,6 +297,7 @@ export function App() {
       view === "color-picker" ||
       view === "password-generator" ||
       view === "window-manager" ||
+      view === "screenshot" ||
       view === "settings" ||
       view === "param-wizard" ||
       mode === "command",
@@ -441,6 +460,8 @@ export function App() {
             ? "Filter history\u2026"
             : view === "window-manager"
               ? "Search windows\u2026"
+              : view === "screenshot"
+                ? "Filter screenshots\u2026"
               : view === "settings"
                 ? "Search settings\u2026"
             : mode === "command"
@@ -448,7 +469,7 @@ export function App() {
               : "Search for apps and commands...";
 
   return (
-    <div className={`app-wrapper ${visible ? "app-visible" : "app-hidden"}`}>
+    <div className="app-wrapper">
       <div className="app-shell">
         {view === "marketplace" ? (
           <Marketplace
@@ -484,7 +505,7 @@ export function App() {
               placeholder={placeholder}
               readOnly={view === "param-wizard"}
               onBack={
-                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager" || view === "settings"
+                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager" || view === "screenshot" || view === "settings"
                   ? handleBack
                   : view === "param-wizard"
                     ? handleWizardBack
@@ -539,6 +560,12 @@ export function App() {
                 onBack={handleBack}
                 onTrailingChange={setSearchTrailing}
                 onQueryChange={setQuery}
+              />
+            ) : view === "screenshot" ? (
+              <Screenshot
+                filter={query}
+                onBack={handleBack}
+                onTrailingChange={setSearchTrailing}
               />
             ) : view === "settings" ? (
               <Settings
