@@ -57,7 +57,16 @@ pub fn get_settings() -> Result<Settings, String> {
 }
 
 #[tauri::command]
-pub fn save_settings(app: AppHandle, settings: Settings) -> Result<(), String> {
+pub fn save_settings(app: AppHandle, mut settings: Settings) -> Result<(), String> {
+    let previous = Settings::load();
+
+    // Sync shortcut display string
+    settings.shortcut = if settings.replace_spotlight {
+        "Cmd+Space".to_string()
+    } else {
+        "Alt+Space".to_string()
+    };
+
     #[cfg(target_os = "macos")]
     {
         use objc2::MainThreadMarker;
@@ -72,7 +81,37 @@ pub fn save_settings(app: AppHandle, settings: Settings) -> Result<(), String> {
             ns_app.setActivationPolicy(policy);
         }
     }
-    let _ = app; // suppress unused warning on non-mac
+
+    // Handle Spotlight shortcut swap
+    #[cfg(target_os = "macos")]
+    {
+        if settings.replace_spotlight != previous.replace_spotlight {
+            use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
+
+            // Toggle Spotlight (disable when replacing, enable when restoring)
+            crate::settings::set_spotlight_enabled(!settings.replace_spotlight)?;
+
+            // Unregister old shortcut
+            let old_shortcut = if previous.replace_spotlight {
+                Shortcut::new(Some(Modifiers::META), Code::Space)
+            } else {
+                Shortcut::new(Some(Modifiers::ALT), Code::Space)
+            };
+            let _ = app.global_shortcut().unregister(old_shortcut);
+
+            // Register new shortcut
+            let new_shortcut = if settings.replace_spotlight {
+                Shortcut::new(Some(Modifiers::META), Code::Space)
+            } else {
+                Shortcut::new(Some(Modifiers::ALT), Code::Space)
+            };
+            app.global_shortcut()
+                .register(new_shortcut)
+                .map_err(|e| format!("Failed to register shortcut: {e}"))?;
+        }
+    }
+
+    let _ = &app; // suppress unused warning on non-mac
     settings.save()
 }
 

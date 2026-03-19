@@ -10,14 +10,15 @@ interface SettingsProps {
   onCheckForUpdates?: () => void;
 }
 
-interface SettingDef {
+export interface SettingDef {
   key: string;
   label: string;
   description: string;
 }
 
-const SETTING_DEFS: SettingDef[] = [
+export const SETTING_DEFS: SettingDef[] = [
   { key: "shortcut", label: "Activation Shortcut", description: "Keyboard shortcut to toggle Emit" },
+  { key: "replace_spotlight", label: "Replace Spotlight", description: "Use Cmd+Space instead of Option+Space (disables Spotlight)" },
   { key: "launch_at_login", label: "Launch at Login", description: "Start Emit when you log in" },
   { key: "show_in_dock", label: "Show in Dock", description: "Display Emit icon in the macOS Dock" },
   { key: "check_for_updates", label: "Check for Updates", description: "Automatically check for new versions" },
@@ -62,7 +63,9 @@ export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
   const renderControl = (key: string) => {
     switch (key) {
       case "shortcut":
-        return <Kbd>{settings.shortcut}</Kbd>;
+        return <Kbd>{settings.replace_spotlight ? "\u2318 Space" : "\u2325 Space"}</Kbd>;
+      case "replace_spotlight":
+        return <Toggle checked={settings.replace_spotlight} onChange={(v) => update({ replace_spotlight: v })} />;
       case "launch_at_login":
         return <Toggle checked={settings.launch_at_login} onChange={(v) => update({ launch_at_login: v })} />;
       case "show_in_dock":

@@ -18,6 +18,7 @@ use extensions::color_picker::ColorPickerProvider;
 use extensions::notion::NotionProvider;
 use extensions::password_generator::{PasswordGeneratorProvider, SharedVaultSession, VaultSession};
 use extensions::window_management::{SharedWmState, WmState, WindowManagementProvider};
+use extensions::screenshot::ScreenshotProvider;
 use extensions::registry::ExtensionRegistry;
 use frecency::FrecencyTracker;
 use launcher::CommandRegistry;
@@ -70,6 +71,7 @@ pub fn run() {
             registry.register(Box::new(ColorPickerProvider::new()));
             registry.register(Box::new(PasswordGeneratorProvider::new()));
             registry.register(Box::new(WindowManagementProvider::new()));
+            registry.register(Box::new(ScreenshotProvider::new()));
 
             let registry = Arc::new(RwLock::new(registry));
 
@@ -110,10 +112,11 @@ pub fn run() {
             clipboard::start_monitor(Arc::clone(&clip_state));
             app.manage(clip_state);
 
-            // Apply dock visibility from saved settings
+            // Apply saved settings at startup
+            let saved = settings::Settings::load();
+
             #[cfg(target_os = "macos")]
             {
-                let saved = settings::Settings::load();
                 if !saved.show_in_dock {
                     use objc2::MainThreadMarker;
                     use objc2_app_kit::{NSApplication, NSApplicationActivationPolicy};
@@ -126,14 +129,24 @@ pub fn run() {
                 }
             }
 
-            // Register global shortcut: Option+Space
-            app.global_shortcut().register(
-                tauri_plugin_global_shortcut::Shortcut::new(Some(Modifiers::ALT), Code::Space),
-            )?;
+            // Register global shortcut from saved settings
+            {
+                let shortcut = if saved.replace_spotlight {
+                    tauri_plugin_global_shortcut::Shortcut::new(Some(Modifiers::META), Code::Space)
+                } else {
+                    tauri_plugin_global_shortcut::Shortcut::new(Some(Modifiers::ALT), Code::Space)
+                };
+                app.global_shortcut().register(shortcut)?;
+            }
 
             // System tray
+            let tooltip = if saved.replace_spotlight {
+                "Emit \u{2014} Cmd+Space to toggle"
+            } else {
+                "Emit \u{2014} Option+Space to toggle"
+            };
             let _tray = TrayIconBuilder::new()
-                .tooltip("Emit — Option+Space to toggle")
+                .tooltip(tooltip)
                 .icon(tauri::image::Image::from_bytes(include_bytes!("../icons/tray-icon.png")).unwrap())
                 .icon_as_template(true)
                 .on_tray_icon_event(|tray, event| {
@@ -222,6 +235,14 @@ pub fn run() {
             extensions::window_management::wm_snap_focused,
             extensions::window_management::wm_get_app_icon,
             extensions::window_management::wm_get_screen_info,
+            // Screenshot
+            extensions::screenshot::screenshot_capture_region,
+            extensions::screenshot::screenshot_capture_window,
+            extensions::screenshot::screenshot_capture_screen,
+            extensions::screenshot::screenshot_list,
+            extensions::screenshot::screenshot_delete,
+            extensions::screenshot::screenshot_copy,
+            extensions::screenshot::screenshot_get_image,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
