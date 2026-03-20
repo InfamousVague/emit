@@ -43,6 +43,29 @@ interface TokenizeResult {
   hasTrailingSpace: boolean;
 }
 
+/**
+ * Tokenize a raw command string into discrete arguments, respecting shell-like
+ * quoting rules. This is the lexer that powers inline `/command arg1 "arg two"`
+ * syntax in the command bar.
+ *
+ * Grammar handled:
+ * - Unquoted tokens delimited by whitespace (spaces / tabs).
+ * - Double-quoted strings (`"arg with spaces"`) — content between matching `"`
+ *   is kept as a single token (quotes included in `.text` for later stripping).
+ * - Single quotes and backslash escapes are **not** currently handled; only `"`
+ *   is treated as a quote character.
+ *
+ * Edge cases:
+ * - **Unclosed quote**: if the input ends while inside a `"…` sequence the
+ *   partial token is returned as `trailingFragment` (not pushed to `tokens`),
+ *   signalling that the user is still typing.
+ * - **Trailing whitespace**: `hasTrailingSpace` is true when the input ends
+ *   with a space outside of quotes, indicating the previous token is complete
+ *   and a new one is expected.
+ *
+ * @param input - The raw string after the command prefix (e.g. `arg1 "arg two"`).
+ * @returns Finalized tokens, any in-progress fragment, and trailing-space flag.
+ */
 function shellSplit(input: string): TokenizeResult {
   const tokens: Token[] = [];
   let current = "";
@@ -98,9 +121,25 @@ function isDelimiter(text: string): boolean {
 }
 
 /**
- * Greedy parser: after a label, collects ALL subsequent tokens until the next
- * label/flag, joining them with spaces. This lets multi-word unquoted values
- * like `title: Testing Lemons` parse correctly as "Testing Lemons".
+ * Parse tokenized arguments into a `{ paramId: value }` map for a given command.
+ *
+ * Uses a **greedy** strategy: after encountering a label delimiter (e.g.
+ * `title:`) or flag (`--priority`), the parser consumes all subsequent tokens
+ * until it hits the next delimiter, joining them with spaces. This lets
+ * multi-word unquoted values like `title: Testing Lemons` parse correctly as
+ * `"Testing Lemons"` without requiring the user to quote them.
+ *
+ * Three argument forms are recognised (checked in order):
+ * 1. **Flag args** (`--paramId value`) — a `--` prefixed token followed by a
+ *    single value token.
+ * 2. **Labelled args** (`name: value …`) — a token ending with `:` followed by
+ *    one or more value tokens (greedy).
+ * 3. **Bare positional args** — anything else is matched to the next unfilled
+ *    required parameter by position.
+ *
+ * @param tokens  - Finalized tokens from {@link shellSplit}.
+ * @param command - The command definition whose params describe expected args.
+ * @returns A map of param IDs to their parsed (string) values.
  */
 function parseArgs(
   tokens: Token[],

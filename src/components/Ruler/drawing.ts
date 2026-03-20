@@ -1,3 +1,19 @@
+/**
+ * Canvas-based measurement overlay rendering.
+ *
+ * This module draws measurement lines, endpoint markers, label badges, dismiss
+ * buttons, and crosshairs onto a `<canvas>` element that sits on top of the
+ * main viewport.
+ *
+ * **Why colors are hardcoded as string literals:**
+ * The Canvas 2D API (`ctx.fillStyle`, `ctx.strokeStyle`) requires concrete
+ * color strings at draw time — it cannot resolve CSS custom properties or
+ * design tokens. The constants below map to the app's visual language:
+ *
+ * - `ACCENT` (`#FF6B35`) — the app-wide accent / orange highlight token.
+ * - `BADGE_BG` (`rgba(0, 0, 0, 0.75)`) / `BADGE_TEXT` (`#ffffff`) — mirror
+ *   the dark-glass badge style used elsewhere in the UI.
+ */
 import type { Measurement, Point, Unit, ClickTarget } from "./types";
 import { formatLabel, angle, midpoint } from "./geometry";
 
