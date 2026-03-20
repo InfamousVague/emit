@@ -5,7 +5,7 @@ const ACCENT = "#FF6B35";
 const BADGE_BG = "rgba(0, 0, 0, 0.75)";
 const BADGE_TEXT = "#ffffff";
 const DISMISS_SIZE = 14;
-const TICK_LENGTH = 20;
+const ENDPOINT_RADIUS = 4;
 
 /** Draw a measurement line with label and dismiss button. Returns the dismiss click target. */
 export function drawMeasurement(
@@ -15,6 +15,8 @@ export function drawMeasurement(
   onDismiss: () => void,
 ): ClickTarget {
   drawLine(ctx, m.start, m.end);
+  drawEndpoint(ctx, m.start);
+  drawEndpoint(ctx, m.end);
   const label = formatLabel(m.start, m.end, unit);
   const mid = midpoint(m.start, m.end);
   const lineAngle = angle(m.start, m.end);
@@ -30,45 +32,32 @@ export function drawActiveDraw(
   unit: Unit,
 ): void {
   drawLine(ctx, start, current);
-  const lineAngle = angle(start, current);
-  drawTickMarks(ctx, start, lineAngle);
-  drawTickMarks(ctx, current, lineAngle);
+  drawEndpoint(ctx, start);
+  drawEndpoint(ctx, current);
 
   const label = formatLabel(start, current, unit);
   const mid = midpoint(start, current);
+  const lineAngle = angle(start, current);
   drawBadge(ctx, label, mid, lineAngle);
 }
 
-/** Draw a simple 1px accent line — no outline or glow. */
+/** Draw a simple 1px accent line — pixel-aligned, no outline or glow. */
 function drawLine(ctx: CanvasRenderingContext2D, a: Point, b: Point): void {
   ctx.strokeStyle = ACCENT;
   ctx.lineWidth = 1;
   ctx.lineCap = "butt";
   ctx.beginPath();
-  ctx.moveTo(a.x, a.y);
-  ctx.lineTo(b.x, b.y);
+  ctx.moveTo(Math.round(a.x) + 0.5, Math.round(a.y) + 0.5);
+  ctx.lineTo(Math.round(b.x) + 0.5, Math.round(b.y) + 0.5);
   ctx.stroke();
 }
 
-/** Draw short perpendicular tick marks at a point. */
-function drawTickMarks(
-  ctx: CanvasRenderingContext2D,
-  point: Point,
-  lineAngle: number,
-): void {
-  const perpAngle = lineAngle + Math.PI / 2;
-  const half = TICK_LENGTH / 2;
-
-  const ax = point.x + Math.cos(perpAngle) * half;
-  const ay = point.y + Math.sin(perpAngle) * half;
-  const bx = point.x - Math.cos(perpAngle) * half;
-  const by = point.y - Math.sin(perpAngle) * half;
-
+/** Draw a hollow circle at a measurement endpoint. */
+function drawEndpoint(ctx: CanvasRenderingContext2D, point: Point): void {
   ctx.strokeStyle = ACCENT;
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(ax, ay);
-  ctx.lineTo(bx, by);
+  ctx.arc(point.x, point.y, ENDPOINT_RADIUS, 0, Math.PI * 2);
   ctx.stroke();
 }
 

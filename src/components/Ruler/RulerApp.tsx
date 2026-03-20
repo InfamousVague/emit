@@ -98,8 +98,8 @@ export function RulerApp() {
     return () => cancelAnimationFrame(raf);
   }, [measurements, activeDraw, cursorPos, unit]);
 
-  // Mouse handlers
-  const handleMouseDown = useCallback(
+  // Mouse handlers — click to start, click to end
+  const handleClick = useCallback(
     (e: React.MouseEvent) => {
       const pos = { x: e.clientX, y: e.clientY };
 
@@ -110,8 +110,27 @@ export function RulerApp() {
         return;
       }
 
-      setActiveDraw({ start: pos, current: pos });
-      dirtyRef.current = true;
+      if (!activeDrawRef.current) {
+        // First click — start drawing
+        setActiveDraw({ start: pos, current: pos });
+        dirtyRef.current = true;
+      } else {
+        // Second click — finalize measurement
+        const { start } = activeDrawRef.current;
+        const endPoint = shiftRef.current
+          ? constrainAngle(start, pos)
+          : pos;
+        const dx = endPoint.x - start.x;
+        const dy = endPoint.y - start.y;
+
+        if (Math.sqrt(dx * dx + dy * dy) > 3) {
+          const id = `m_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+          setMeasurements((prev) => [...prev, { id, start, end: endPoint }]);
+        }
+
+        setActiveDraw(null);
+        dirtyRef.current = true;
+      }
     },
     [],
   );
@@ -134,23 +153,6 @@ export function RulerApp() {
     },
     [],
   );
-
-  const handleMouseUp = useCallback(() => {
-    if (!activeDrawRef.current) return;
-
-    const { start, current } = activeDrawRef.current;
-    const dx = current.x - start.x;
-    const dy = current.y - start.y;
-
-    // Only create measurement if dragged more than 3px
-    if (Math.sqrt(dx * dx + dy * dy) > 3) {
-      const id = `m_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-      setMeasurements((prev) => [...prev, { id, start, end: current }]);
-    }
-
-    setActiveDraw(null);
-    dirtyRef.current = true;
-  }, []);
 
   // Keyboard handlers
   useEffect(() => {
@@ -204,9 +206,8 @@ export function RulerApp() {
       <canvas
         ref={canvasRef}
         className="ruler-canvas"
-        onMouseDown={handleMouseDown}
+        onClick={handleClick}
         onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
       />
       <ZoomPanel cursorPos={cursorPos} zoomLevel={zoomLevel} />
       <ControlPanel
