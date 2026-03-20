@@ -214,7 +214,7 @@ pub fn start_collector(
 ) {
     use tauri::Emitter;
 
-    tokio::spawn(async move {
+    tauri::async_runtime::spawn(async move {
         let mut sys = sysinfo::System::new_all();
         let mut networks = sysinfo::Networks::new_with_refreshed_list();
         let mut disks = sysinfo::Disks::new_with_refreshed_list();
