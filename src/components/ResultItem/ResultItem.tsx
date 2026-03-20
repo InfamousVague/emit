@@ -7,9 +7,10 @@ interface ResultItemProps {
   command: CommandEntry;
   isSelected: boolean;
   onClick: () => void;
+  trailing?: React.ReactNode;
 }
 
-export function ResultItem({ command, isSelected, onClick }: ResultItemProps) {
+export function ResultItem({ command, isSelected, onClick, trailing }: ResultItemProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,9 +39,11 @@ export function ResultItem({ command, isSelected, onClick }: ResultItemProps) {
         </div>
         <div className="result-desc">{command.description}</div>
       </div>
-      <div className="result-shortcut">
-        <Kbd>{"\u21B5"}</Kbd>
-      </div>
+      {trailing ?? (
+        <div className="result-shortcut">
+          <Kbd>{"\u21B5"}</Kbd>
+        </div>
+      )}
     </div>
   );
 }

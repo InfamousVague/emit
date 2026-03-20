@@ -18,6 +18,7 @@ import { UndoToast } from "./components/CommandMode/UndoToast";
 import { ParamWizard } from "./components/ParamWizard/ParamWizard";
 import { UpdateBanner } from "./components/UpdateBanner/UpdateBanner";
 import { PerfDashboard } from "./components/PerfMonitor/PerfDashboard";
+import { usePerfMonitor } from "./hooks/usePerfMonitor";
 import { useSearch } from "./hooks/useSearch";
 import { useKeyboardNav } from "./hooks/useKeyboardNav";
 import { useAutoUpdate } from "./hooks/useAutoUpdate";
@@ -331,6 +332,7 @@ export function App() {
   });
 
   const { update, installUpdate, dismissUpdate, checkNow } = useAutoUpdate();
+  const { history: perfHistory } = usePerfMonitor();
 
   const groups = useMemo(() => groupByCategory(results), [results]);
 
@@ -675,6 +677,7 @@ export function App() {
                           selectedIndex={selectedIndex}
                           globalOffset={groupOffset}
                           onItemClick={handleItemClick}
+                          perfHistory={category === "Performance" ? perfHistory : undefined}
                         />
                       );
                     })

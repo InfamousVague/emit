@@ -55,3 +55,15 @@
 .result-item:hover .result-shortcut {
   opacity: 1;
 }
+
+/* Sparkline in search results */
+.perf-sparkline {
+  flex-shrink: 0;
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
+}
+
+.result-item:hover .perf-sparkline,
+.result-item.selected .perf-sparkline {
+  opacity: 1;
+}
