@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Text } from "./Text";
 
 interface SectionHeaderProps {
@@ -5,7 +6,7 @@ interface SectionHeaderProps {
   className?: string;
 }
 
-export function SectionHeader({ children, className }: SectionHeaderProps) {
+export const SectionHeader = memo(function SectionHeader({ children, className }: SectionHeaderProps) {
   return (
     <Text
       as="div"
@@ -18,4 +19,4 @@ export function SectionHeader({ children, className }: SectionHeaderProps) {
       {children}
     </Text>
   );
-}
+});

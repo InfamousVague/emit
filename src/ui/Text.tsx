@@ -1,3 +1,4 @@
+import { memo } from "react";
 import "./Text.css";
 
 type TextSize = "3xs" | "2xs" | "xs" | "sm" | "base" | "md" | "lg";
@@ -16,7 +17,7 @@ interface TextProps {
   style?: React.CSSProperties;
 }
 
-export function Text({
+export const Text = memo(function Text({
   size = "md",
   weight = "normal",
   color = "primary",
@@ -44,4 +45,4 @@ export function Text({
       {children}
     </Tag>
   );
-}
+});

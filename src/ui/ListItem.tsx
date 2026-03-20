@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import "./ListItem.css";
 
 interface ListItemProps {
@@ -11,7 +11,7 @@ interface ListItemProps {
   className?: string;
 }
 
-export function ListItem({
+export const ListItem = memo(function ListItem({
   icon,
   title,
   description,
@@ -44,4 +44,4 @@ export function ListItem({
       {trailing && <div className="emit-list-item__trailing">{trailing}</div>}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Area,
   AreaChart,
@@ -14,7 +15,7 @@ interface Props {
   history: MetricSnapshot[];
 }
 
-export function CpuCard({ snapshot, history }: Props) {
+export const CpuCard = memo(function CpuCard({ snapshot, history }: Props) {
   const totalUsage = snapshot?.cpu.total_usage ?? 0;
   const cores = snapshot?.cpu.per_core ?? [];
   const color = thresholdColor(totalUsage);
@@ -90,4 +91,4 @@ export function CpuCard({ snapshot, history }: Props) {
       </div>
     </>
   );
-}
+});

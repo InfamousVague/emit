@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { MetricSnapshot } from "../../../lib/types";
 import { thresholdColor } from "../utils";
 
@@ -6,7 +7,7 @@ interface Props {
   history: MetricSnapshot[];
 }
 
-export function GpuCard({ snapshot }: Props) {
+export const GpuCard = memo(function GpuCard({ snapshot }: Props) {
   const gpu = snapshot?.gpu;
 
   if (!gpu) {
@@ -41,4 +42,4 @@ export function GpuCard({ snapshot }: Props) {
       </div>
     </>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { MetricSnapshot } from "../../../lib/types";
 import { formatBytes, formatBytesPerSec } from "../utils";
 
@@ -6,7 +7,7 @@ interface Props {
   history: MetricSnapshot[];
 }
 
-export function NetworkCard({ snapshot }: Props) {
+export const NetworkCard = memo(function NetworkCard({ snapshot }: Props) {
   const net = snapshot?.network;
   if (!net) {
     return (
@@ -49,4 +50,4 @@ export function NetworkCard({ snapshot }: Props) {
       )}
     </>
   );
-}
+});

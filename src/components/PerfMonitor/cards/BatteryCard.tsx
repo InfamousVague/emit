@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { MetricSnapshot } from "../../../lib/types";
 import { thresholdColor } from "../utils";
 
@@ -6,7 +7,7 @@ interface Props {
   history: MetricSnapshot[];
 }
 
-export function BatteryCard({ snapshot }: Props) {
+export const BatteryCard = memo(function BatteryCard({ snapshot }: Props) {
   const battery = snapshot?.battery;
 
   if (!battery) {
@@ -54,4 +55,4 @@ export function BatteryCard({ snapshot }: Props) {
       </div>
     </>
   );
-}
+});

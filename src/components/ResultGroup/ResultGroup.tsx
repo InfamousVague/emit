@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { CommandEntry, MetricSnapshot } from "../../lib/types";
 import { ResultItem } from "../ResultItem/ResultItem";
 import { PerfSparkline } from "../PerfMonitor/PerfSparkline";
@@ -21,7 +22,7 @@ interface ResultGroupProps {
   perfHistory?: MetricSnapshot[];
 }
 
-export function ResultGroup({
+export const ResultGroup = memo(function ResultGroup({
   category,
   commands,
   selectedIndex,
@@ -51,4 +52,4 @@ export function ResultGroup({
       })}
     </div>
   );
-}
+});

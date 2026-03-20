@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { perfGetProcesses } from "../../../lib/tauri";
 import type { MetricSnapshot, ProcessInfo } from "../../../lib/types";
 import { formatBytes } from "../utils";
@@ -10,7 +10,7 @@ interface Props {
   history: MetricSnapshot[];
 }
 
-export function ProcessCard({ snapshot }: Props) {
+export const ProcessCard = memo(function ProcessCard({ snapshot }: Props) {
   const [processes, setProcesses] = useState<ProcessInfo[]>([]);
   const [sortField, setSortField] = useState<SortField>("cpu");
   const [sortAsc, setSortAsc] = useState(false);
@@ -102,4 +102,4 @@ export function ProcessCard({ snapshot }: Props) {
       </table>
     </>
   );
-}
+});

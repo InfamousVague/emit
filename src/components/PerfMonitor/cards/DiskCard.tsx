@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { MetricSnapshot } from "../../../lib/types";
 import { formatBytes, thresholdColor } from "../utils";
 
@@ -6,7 +7,7 @@ interface Props {
   history: MetricSnapshot[];
 }
 
-export function DiskCard({ snapshot }: Props) {
+export const DiskCard = memo(function DiskCard({ snapshot }: Props) {
   const disks = snapshot?.disks ?? [];
 
   if (disks.length === 0) {
@@ -54,4 +55,4 @@ export function DiskCard({ snapshot }: Props) {
       </div>
     </>
   );
-}
+});

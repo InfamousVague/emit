@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import type { CommandEntry } from "../../lib/types";
 import { CommandIcon, HighlightedText, Kbd } from "../../ui";
 import "./ResultItem.css";
@@ -10,7 +10,7 @@ interface ResultItemProps {
   trailing?: React.ReactNode;
 }
 
-export function ResultItem({ command, isSelected, onClick, trailing }: ResultItemProps) {
+export const ResultItem = memo(function ResultItem({ command, isSelected, onClick, trailing }: ResultItemProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,4 +46,4 @@ export function ResultItem({ command, isSelected, onClick, trailing }: ResultIte
       )}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { MetricSnapshot } from "../../../lib/types";
 import { formatBytes, thresholdColor } from "../utils";
 
@@ -6,7 +7,7 @@ interface Props {
   history: MetricSnapshot[];
 }
 
-export function MemoryCard({ snapshot }: Props) {
+export const MemoryCard = memo(function MemoryCard({ snapshot }: Props) {
   const mem = snapshot?.memory;
   if (!mem) {
     return (
@@ -49,4 +50,4 @@ export function MemoryCard({ snapshot }: Props) {
       </div>
     </>
   );
-}
+});

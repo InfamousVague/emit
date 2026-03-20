@@ -1,3 +1,4 @@
+import { memo } from "react";
 import "./Badge.css";
 
 type BadgeVariant = "default" | "success" | "warning" | "error";
@@ -8,7 +9,7 @@ interface BadgeProps {
   children: React.ReactNode;
 }
 
-export function Badge({
+export const Badge = memo(function Badge({
   variant = "default",
   className = "",
   children,
@@ -18,4 +19,4 @@ export function Badge({
       {children}
     </span>
   );
-}
+});
