@@ -17,6 +17,9 @@
 
 .app-shell--expanded {
   max-height: 700px;
+  /* WebKit: child backdrop-filter breaks parent overflow + border-radius clipping.
+     A mask forces proper compositing so rounded corners are preserved. */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .results {
