@@ -19,22 +19,9 @@ import {
 import { ActionBar, Button, Kbd, HighlightedText, Select } from "../../ui";
 import type { Action } from "../../ui";
 import { detectColor } from "../../lib/color";
+import { formatTimestamp } from "../../lib/format";
+import { substringMatchIndices } from "../../lib/search";
 import "./ClipboardManager.css";
-
-/** Find all character indices where `needle` matches in `haystack` (case-insensitive). */
-function substringMatchIndices(haystack: string, needle: string): number[] {
-  if (!needle) return [];
-  const lower = haystack.toLowerCase();
-  const target = needle.toLowerCase();
-  const indices: number[] = [];
-  let start = 0;
-  let pos: number;
-  while ((pos = lower.indexOf(target, start)) !== -1) {
-    for (let i = pos; i < pos + target.length; i++) indices.push(i);
-    start = pos + 1;
-  }
-  return indices;
-}
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -479,16 +466,4 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
       </div>
     </div>
   );
-}
-
-function formatTimestamp(ts: number): string {
-  const diff = Date.now() - ts;
-  const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return "Just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Settings as SettingsType, ShortcutBinding } from "../../lib/types";
 import { getSettings, saveSettings, getShortcuts, rebindShortcut } from "../../lib/tauri";
 import { Toggle, Select, Kbd, HighlightedText } from "../../ui";
+import { substringMatchIndices } from "../../lib/search";
 import { ShortcutRecorder } from "./ShortcutRecorder";
 import "./Settings.css";
 
@@ -28,13 +29,6 @@ export const SETTING_DEFS: SettingDef[] = [
   { key: "ruler_default_unit", label: "Ruler Default Unit", description: "Default measurement unit for the ruler" },
 ];
 
-function substringIndices(text: string, query: string): number[] {
-  if (!query) return [];
-  const idx = text.toLowerCase().indexOf(query.toLowerCase());
-  if (idx === -1) return [];
-  return Array.from({ length: query.length }, (_, i) => idx + i);
-}
-
 export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
   const [settings, setSettings] = useState<SettingsType | null>(null);
   const [shortcuts, setShortcuts] = useState<ShortcutBinding[]>([]);
@@ -58,8 +52,8 @@ export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
       .filter((s) => s.label.toLowerCase().includes(q) || s.description.toLowerCase().includes(q))
       .map((s) => ({
         ...s,
-        labelIndices: substringIndices(s.label, filter),
-        descIndices: substringIndices(s.description, filter),
+        labelIndices: substringMatchIndices(s.label, filter),
+        descIndices: substringMatchIndices(s.description, filter),
       }));
   }, [filter]);
 
