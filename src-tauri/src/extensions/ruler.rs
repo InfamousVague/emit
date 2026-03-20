@@ -72,23 +72,16 @@ pub fn ruler_open(app: tauri::AppHandle) -> Result<(), String> {
     }
 
     let screens = get_all_screens();
-    if screens.is_empty() {
-        return Err("No screens found".into());
-    }
+    let primary = screens
+        .iter()
+        .find(|s| s.is_primary)
+        .or(screens.first())
+        .ok_or("No screens found")?;
 
-    // Compute bounding rect across all screens
-    let mut min_x = f64::MAX;
-    let mut min_y = f64::MAX;
-    let mut max_x = f64::MIN;
-    let mut max_y = f64::MIN;
-    for s in &screens {
-        min_x = min_x.min(s.x);
-        min_y = min_y.min(s.y);
-        max_x = max_x.max(s.x + s.width);
-        max_y = max_y.max(s.y + s.height);
-    }
-    let total_w = max_x - min_x;
-    let total_h = max_y - min_y;
+    let min_x = primary.x;
+    let min_y = primary.y;
+    let total_w = primary.width;
+    let total_h = primary.height;
 
     // Hide main launcher
     crate::window::hide(&app);
