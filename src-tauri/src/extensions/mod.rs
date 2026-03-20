@@ -1,5 +1,6 @@
 pub mod color_picker;
 pub mod crypto;
+pub mod ioreg;
 pub mod manifest;
 pub mod notion;
 pub mod password_generator;

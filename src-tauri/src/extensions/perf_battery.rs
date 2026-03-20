@@ -1,4 +1,4 @@
-//! Battery information via ioreg command (macOS).
+//! Battery metrics via macOS ioreg command.
 
 use super::perf_monitor::BatteryMetrics;
 
@@ -14,37 +14,19 @@ pub fn get_battery_info() -> Option<BatteryMetrics> {
         return None;
     }
 
-    let get_int = |key: &str| -> Option<i64> {
-        for line in text.lines() {
-            let trimmed = line.trim();
-            if trimmed.contains(key) {
-                if let Some(val_str) = trimmed.split('=').nth(1) {
-                    return val_str.trim().parse::<i64>().ok();
-                }
-            }
-        }
-        None
-    };
+    use super::ioreg::{parse_ioreg_bool, parse_ioreg_int};
 
-    let get_bool = |key: &str| -> bool {
-        for line in text.lines() {
-            if line.contains(key) {
-                return line.contains("Yes");
-            }
-        }
-        false
-    };
-
-    let current_capacity = get_int("\"CurrentCapacity\"")? as f64;
-    let max_capacity = get_int("\"MaxCapacity\"").unwrap_or(100) as f64;
-    let design_capacity = get_int("\"DesignCapacity\"").unwrap_or(max_capacity as i64) as f64;
-    let is_charging = get_bool("\"IsCharging\"");
-    let cycle_count = get_int("\"CycleCount\"").unwrap_or(0) as u32;
-    let temperature = get_int("\"Temperature\"").unwrap_or(0) as f64 / 100.0;
-    let amperage = get_int("\"InstantAmperage\"").unwrap_or(0) as f64;
-    let voltage = get_int("\"Voltage\"").unwrap_or(0) as f64 / 1000.0;
+    let current_capacity = parse_ioreg_int(&text, "\"CurrentCapacity\"")? as f64;
+    let max_capacity = parse_ioreg_int(&text, "\"MaxCapacity\"").unwrap_or(100) as f64;
+    let design_capacity =
+        parse_ioreg_int(&text, "\"DesignCapacity\"").unwrap_or(max_capacity as i64) as f64;
+    let is_charging = parse_ioreg_bool(&text, "\"IsCharging\"");
+    let cycle_count = parse_ioreg_int(&text, "\"CycleCount\"").unwrap_or(0) as u32;
+    let temperature = parse_ioreg_int(&text, "\"Temperature\"").unwrap_or(0) as f64 / 100.0;
+    let amperage = parse_ioreg_int(&text, "\"InstantAmperage\"").unwrap_or(0) as f64;
+    let voltage = parse_ioreg_int(&text, "\"Voltage\"").unwrap_or(0) as f64 / 1000.0;
     let power_draw = (amperage.abs() * voltage) / 1000.0;
-    let time_remaining = get_int("\"TimeRemaining\"").map(|t| t as u32);
+    let time_remaining = parse_ioreg_int(&text, "\"TimeRemaining\"").map(|t| t as u32);
 
     let charge_percent = if max_capacity > 0.0 {
         (current_capacity / max_capacity * 100.0) as f32

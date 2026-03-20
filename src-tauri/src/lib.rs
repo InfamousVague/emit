@@ -102,28 +102,11 @@ pub fn run() {
 
             // Build command registry with all providers
             let mut registry = CommandRegistry::new();
-            let providers: Vec<Box<dyn CommandProvider>> = vec![
-                Box::new(BuiltinProvider::new()),
-                Box::new(ApplicationProvider::new()),
-                Box::new(FileSearchProvider::new()),
-                Box::new(ClipboardProvider::new()),
-                Box::new(NotionProvider::new(Arc::clone(&ext_registry))),
-                Box::new(ColorPickerProvider::new()),
-                Box::new(PasswordGeneratorProvider::new()),
-                Box::new(WindowManagementProvider::new()),
-                Box::new(ScreenshotProvider::new()),
-                Box::new(RulerProvider::new()),
-                Box::new(PerfMonitorProvider::with_store(Arc::clone(&metrics_store))),
-            ];
+            let providers = build_providers(Arc::clone(&ext_registry), Arc::clone(&metrics_store));
 
             // Collect shortcuts from all providers before registering them
             let saved = settings::Settings::load();
-            let mut shortcut_registry = ShortcutRegistry::new();
-            for provider in &providers {
-                for binding in provider.shortcuts() {
-                    shortcut_registry.register(binding, &saved.shortcuts);
-                }
-            }
+            setup_shortcuts(app, &providers, &saved)?;
 
             // Register all providers
             for provider in providers {
@@ -180,11 +163,6 @@ pub fn run() {
             app.manage(metrics_store);
             app.manage(alert_config);
 
-            // Shortcut registry (managed state)
-            let shortcut_registry: SharedShortcutRegistry =
-                Arc::new(RwLock::new(shortcut_registry));
-            app.manage(Arc::clone(&shortcut_registry));
-
             #[cfg(target_os = "macos")]
             {
                 if !saved.show_in_dock {
@@ -195,25 +173,6 @@ pub fn run() {
                         ns_app.setActivationPolicy(
                             NSApplicationActivationPolicy::Accessory,
                         );
-                    }
-                }
-            }
-
-            // Register global shortcuts
-            {
-                // Main toggle shortcut
-                let shortcut = if saved.replace_spotlight {
-                    tauri_plugin_global_shortcut::Shortcut::new(Some(Modifiers::META), Code::Space)
-                } else {
-                    tauri_plugin_global_shortcut::Shortcut::new(Some(Modifiers::ALT), Code::Space)
-                };
-                app.global_shortcut().register(shortcut)?;
-
-                // Extension shortcuts
-                let reg = shortcut_registry.blocking_read();
-                for shortcut in reg.tauri_shortcuts() {
-                    if let Err(e) = app.global_shortcut().register(shortcut) {
-                        log::warn!("Failed to register shortcut: {e}");
                     }
                 }
             }
@@ -343,4 +302,60 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+fn build_providers(
+    ext_registry: Arc<RwLock<ExtensionRegistry>>,
+    metrics_store: SharedMetricsStore,
+) -> Vec<Box<dyn CommandProvider>> {
+    vec![
+        Box::new(BuiltinProvider::new()),
+        Box::new(ApplicationProvider::new()),
+        Box::new(FileSearchProvider::new()),
+        Box::new(ClipboardProvider::new()),
+        Box::new(NotionProvider::new(ext_registry)),
+        Box::new(ColorPickerProvider::new()),
+        Box::new(PasswordGeneratorProvider::new()),
+        Box::new(WindowManagementProvider::new()),
+        Box::new(ScreenshotProvider::new()),
+        Box::new(RulerProvider::new()),
+        Box::new(PerfMonitorProvider::with_store(metrics_store)),
+    ]
+}
+
+fn setup_shortcuts(
+    app: &tauri::App,
+    providers: &[Box<dyn CommandProvider>],
+    saved: &settings::Settings,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut shortcut_registry = ShortcutRegistry::new();
+    for provider in providers {
+        for binding in provider.shortcuts() {
+            shortcut_registry.register(binding, &saved.shortcuts);
+        }
+    }
+
+    let shortcut_registry: SharedShortcutRegistry =
+        Arc::new(RwLock::new(shortcut_registry));
+    app.manage(Arc::clone(&shortcut_registry));
+
+    // Main toggle shortcut
+    let shortcut = if saved.replace_spotlight {
+        tauri_plugin_global_shortcut::Shortcut::new(Some(Modifiers::META), Code::Space)
+    } else {
+        tauri_plugin_global_shortcut::Shortcut::new(Some(Modifiers::ALT), Code::Space)
+    };
+    app.global_shortcut().register(shortcut)?;
+
+    // Extension shortcuts
+    {
+        let reg = shortcut_registry.blocking_read();
+        for shortcut in reg.tauri_shortcuts() {
+            if let Err(e) = app.global_shortcut().register(shortcut) {
+                log::warn!("Failed to register shortcut: {e}");
+            }
+        }
+    }
+
+    Ok(())
 }

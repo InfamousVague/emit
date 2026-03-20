@@ -1,4 +1,4 @@
-//! Performance Monitor extension — system metrics collector and command provider.
+//! Real-time system performance monitoring with CPU, RAM, disk, network, GPU, and battery metrics.
 
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};

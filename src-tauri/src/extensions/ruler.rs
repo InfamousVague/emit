@@ -1,3 +1,5 @@
+//! Pixel ruler overlay for measuring distances on screen.
+
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 

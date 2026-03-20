@@ -1,4 +1,4 @@
-//! Ring buffer for metric history + persistence.
+//! Ring buffer storage for metric history with disk persistence.
 
 use std::collections::VecDeque;
 use std::path::PathBuf;
