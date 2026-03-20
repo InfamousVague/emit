@@ -4,7 +4,7 @@
   position: fixed;
   inset: 0;
   background: transparent;
-  cursor: crosshair;
+  cursor: none;
 }
 
 .ruler-canvas {

@@ -12,37 +12,6 @@ import { ZoomPanel } from "./ZoomPanel";
 import { ControlPanel } from "./ControlPanel";
 import "./RulerApp.css";
 
-const SNAP_DISTANCE = 8;
-
-/** Snap a point to the nearest detected edge within SNAP_DISTANCE pixels. */
-function snapToEdge(
-  pos: Point,
-  edges: Array<{ x: number; y: number; direction: string }>,
-): Point {
-  if (edges.length === 0) return pos;
-
-  let closest: { dist: number; snapped: Point } | null = null;
-
-  for (const edge of edges) {
-    const isHoriz = edge.direction === "left" || edge.direction === "right";
-    // Snap along the axis the edge was detected on
-    const dist = isHoriz
-      ? Math.abs(pos.x - edge.x)
-      : Math.abs(pos.y - edge.y);
-
-    if (dist < SNAP_DISTANCE && (!closest || dist < closest.dist)) {
-      closest = {
-        dist,
-        snapped: isHoriz
-          ? { x: edge.x, y: pos.y }
-          : { x: pos.x, y: edge.y },
-      };
-    }
-  }
-
-  return closest ? closest.snapped : pos;
-}
-
 export function RulerApp() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
@@ -53,9 +22,7 @@ export function RulerApp() {
   const [cursorPos, setCursorPos] = useState<Point>({ x: 0, y: 0 });
   const [unit, setUnit] = useState<Unit>("px");
   const [zoomLevel, setZoomLevel] = useState(4);
-  const [edges, setEdges] = useState<Array<{ x: number; y: number; direction: string }>>([]);
   const shiftRef = useRef(false);
-  const edgesRef = useRef(edges);
   const clickTargetsRef = useRef<ClickTarget[]>([]);
   const lastEscRef = useRef(0);
   const dirtyRef = useRef(true);
@@ -65,7 +32,6 @@ export function RulerApp() {
   // Keep refs in sync
   activeDrawRef.current = activeDraw;
   measurementsRef.current = measurements;
-  edgesRef.current = edges;
 
   // Resize canvas to window
   useEffect(() => {
@@ -130,16 +96,15 @@ export function RulerApp() {
 
     raf = requestAnimationFrame(render);
     return () => cancelAnimationFrame(raf);
-  }, [measurements, activeDraw, cursorPos, unit, edges]);
+  }, [measurements, activeDraw, cursorPos, unit]);
 
   // Mouse handlers
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      const raw = { x: e.clientX, y: e.clientY };
-      const pos = snapToEdge(raw, edgesRef.current);
+      const pos = { x: e.clientX, y: e.clientY };
 
       // Check if clicking a dismiss button
-      const hit = hitTest(clickTargetsRef.current, raw);
+      const hit = hitTest(clickTargetsRef.current, pos);
       if (hit) {
         hit.action();
         return;
@@ -153,15 +118,14 @@ export function RulerApp() {
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      const raw = { x: e.clientX, y: e.clientY };
-      const snapped = snapToEdge(raw, edgesRef.current);
-      setCursorPos(snapped);
+      const pos = { x: e.clientX, y: e.clientY };
+      setCursorPos(pos);
       dirtyRef.current = true;
 
       if (activeDrawRef.current) {
         const endPoint = shiftRef.current
-          ? constrainAngle(activeDrawRef.current.start, snapped)
-          : snapped;
+          ? constrainAngle(activeDrawRef.current.start, pos)
+          : pos;
         setActiveDraw({
           start: activeDrawRef.current.start,
           current: endPoint,
@@ -221,21 +185,6 @@ export function RulerApp() {
       document.removeEventListener("keyup", onKeyUp);
     };
   }, []);
-
-  // Edge detection — fetch detected edges near cursor (throttled)
-  const edgeFetchRef = useRef(0);
-  useEffect(() => {
-    const now = Date.now();
-    if (now - edgeFetchRef.current < 100) return; // ~10fps
-    edgeFetchRef.current = now;
-
-    invoke<Array<{ x: number; y: number; direction: string }>>(
-      "ruler_detect_edges",
-      { x: cursorPos.x, y: cursorPos.y, radius: 50 },
-    )
-      .then(setEdges)
-      .catch(() => setEdges([]));
-  }, [cursorPos.x, cursorPos.y]);
 
   // Scroll wheel for zoom
   useEffect(() => {
