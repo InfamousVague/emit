@@ -37,6 +37,16 @@ impl CommandProvider for RulerProvider {
             None
         }
     }
+
+    fn shortcuts(&self) -> Vec<crate::shortcuts::ShortcutBinding> {
+        vec![crate::shortcuts::ShortcutBinding {
+            id: "ruler.open".into(),
+            label: "Pixel Ruler".into(),
+            default_keys: "Shift+Cmd+R".into(),
+            keys: "Shift+Cmd+R".into(),
+            extension_id: "ruler".into(),
+        }]
+    }
 }
 
 // --- Types ---

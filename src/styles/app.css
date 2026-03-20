@@ -15,6 +15,10 @@
   max-height: 418px;
 }
 
+.app-shell--expanded {
+  max-height: 700px;
+}
+
 .results {
   flex: 1;
   overflow-y: auto;

@@ -12,6 +12,7 @@ import {
   Command,
   PuzzlePiece,
   NotePencil,
+  Gauge,
 } from "@phosphor-icons/react";
 import type { IconProps } from "@phosphor-icons/react";
 import { COMMAND_EXTENSION_ICONS } from "../assets/extension-icons";
@@ -28,6 +29,7 @@ const ID_ICON_MAP: Record<string, PhosphorIcon> = {
   "system.logout": SignOut,
   "system.trash": Trash,
   "notion.open": NotePencil,
+  "perf-monitor.open": Gauge,
 };
 
 /** Fallback icons by category. */

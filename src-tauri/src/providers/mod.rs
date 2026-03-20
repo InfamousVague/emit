@@ -59,4 +59,9 @@ pub trait CommandProvider: Send + Sync {
     ) -> Option<CommandResult> {
         None
     }
+
+    /// Return keyboard shortcuts this provider wants to register.
+    fn shortcuts(&self) -> Vec<crate::shortcuts::ShortcutBinding> {
+        vec![]
+    }
 }

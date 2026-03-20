@@ -17,6 +17,7 @@ import { FollowUpBar } from "./components/CommandMode/FollowUpBar";
 import { UndoToast } from "./components/CommandMode/UndoToast";
 import { ParamWizard } from "./components/ParamWizard/ParamWizard";
 import { UpdateBanner } from "./components/UpdateBanner/UpdateBanner";
+import { PerfDashboard } from "./components/PerfMonitor/PerfDashboard";
 import { useSearch } from "./hooks/useSearch";
 import { useKeyboardNav } from "./hooks/useKeyboardNav";
 import { useAutoUpdate } from "./hooks/useAutoUpdate";
@@ -32,6 +33,7 @@ import {
   wmSnapFocused,
 } from "./lib/tauri";
 import { exit } from "@tauri-apps/plugin-process";
+import { listen } from "@tauri-apps/api/event";
 import { groupByCategory } from "./lib/groupByCategory";
 import type {
   CommandDefinition,
@@ -52,7 +54,8 @@ type View =
   | "color-picker"
   | "password-generator"
   | "window-manager"
-  | "screenshot";
+  | "screenshot"
+  | "perf";
 
 export function App() {
   const [view, setView] = useState<View>("search");
@@ -81,6 +84,7 @@ export function App() {
   const [allCommands, setAllCommands] = useState<CommandDefinition[]>([]);
   const [showUndo, setShowUndo] = useState(false);
   const [isCommandExecuting, setIsCommandExecuting] = useState(false);
+  const [perfScrollTo, setPerfScrollTo] = useState<string | undefined>();
 
 
   // ── Autocomplete for picker params in args phase ──────────────────────
@@ -161,6 +165,21 @@ export function App() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
+  // Listen for navigate-view events from global shortcuts
+  useEffect(() => {
+    const unlisten = listen<string>("navigate-view", (event) => {
+      const target = event.payload;
+      if (target === "perf") {
+        setQuery("");
+        setPerfScrollTo(undefined);
+        setView((prev) => (prev === "perf" ? "search" : "perf"));
+      }
+    });
+    return () => {
+      unlisten.then((fn) => fn());
+    };
+  }, [setQuery]);
+
   const BOOLEAN_SETTINGS = new Set([
     "replace_spotlight",
     "launch_at_login",
@@ -208,6 +227,10 @@ export function App() {
       } else if (result === "view:screenshot") {
         setQuery("");
         setView("screenshot");
+      } else if (result === "view:perf" || result.startsWith("view:perf:")) {
+        setQuery("");
+        setPerfScrollTo(result.includes(":") ? result.split(":").pop() : undefined);
+        setView("perf");
       } else if (result === "action:ruler") {
         await rulerOpen();
       } else if (result.startsWith("action:wm.snap.")) {
@@ -303,6 +326,7 @@ export function App() {
       view === "screenshot" ||
       view === "settings" ||
       view === "param-wizard" ||
+      view === "perf" ||
       mode === "command",
   });
 
@@ -467,13 +491,15 @@ export function App() {
                 ? "Filter screenshots\u2026"
               : view === "settings"
                 ? "Search settings\u2026"
+                : view === "perf"
+                  ? "Search metrics\u2026"
             : mode === "command"
               ? "Type a command..."
               : "Search for apps and commands...";
 
   return (
     <div className="app-wrapper">
-      <div className="app-shell">
+      <div className={`app-shell${view === "perf" ? " app-shell--expanded" : ""}`}>
         {view === "marketplace" ? (
           <Marketplace
             onBack={handleBack}
@@ -508,7 +534,7 @@ export function App() {
               placeholder={placeholder}
               readOnly={view === "param-wizard"}
               onBack={
-                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager" || view === "screenshot" || view === "settings"
+                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager" || view === "screenshot" || view === "settings" || view === "perf"
                   ? handleBack
                   : view === "param-wizard"
                     ? handleWizardBack
@@ -575,6 +601,13 @@ export function App() {
                 filter={query}
                 onBack={handleBack}
                 onCheckForUpdates={checkNow}
+              />
+            ) : view === "perf" ? (
+              <PerfDashboard
+                filter={query}
+                onBack={handleBack}
+                onTrailingChange={setSearchTrailing}
+                scrollToCard={perfScrollTo}
               />
             ) : isCommandMode ? (
               <>

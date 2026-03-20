@@ -74,5 +74,15 @@ pub fn all_manifests() -> Vec<ExtensionManifest> {
             default_enabled: true,
             has_settings: true,
         },
+        ExtensionManifest {
+            id: "perf-monitor".into(),
+            name: "Performance Monitor".into(),
+            description: "Real-time system metrics, charts, and alerts".into(),
+            icon: "Gauge".into(),
+            category: "Utilities".into(),
+            bundled: true,
+            default_enabled: true,
+            has_settings: true,
+        },
     ]
 }

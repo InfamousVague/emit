@@ -362,3 +362,53 @@ export async function rulerCopyMeasurements(data: string): Promise<void> {
 export async function rulerScreenshotOverlay(): Promise<string> {
   return invoke("ruler_screenshot_overlay");
 }
+
+// --- Performance Monitor ---
+
+export async function perfGetSnapshot(): Promise<
+  import("./types").MetricSnapshot
+> {
+  return invoke("perf_get_snapshot");
+}
+
+export async function perfGetHistory(
+  range: string,
+): Promise<import("./types").MetricSnapshot[]> {
+  return invoke("perf_get_history", { range });
+}
+
+export async function perfGetProcesses(
+  sortBy: string,
+  limit: number,
+): Promise<import("./types").ProcessInfo[]> {
+  return invoke("perf_get_processes", { sortBy, limit });
+}
+
+export async function perfGetAlerts(): Promise<import("./types").AlertConfig> {
+  return invoke("perf_get_alerts");
+}
+
+export async function perfSaveAlerts(
+  newConfig: import("./types").AlertConfig,
+): Promise<void> {
+  return invoke("perf_save_alerts", { newConfig });
+}
+
+export async function perfResizeWindow(height: number): Promise<void> {
+  return invoke("perf_resize_window", { height });
+}
+
+// --- Shortcuts ---
+
+export async function getShortcuts(): Promise<
+  import("./types").ShortcutBinding[]
+> {
+  return invoke("get_shortcuts");
+}
+
+export async function rebindShortcut(
+  id: string,
+  keys: string,
+): Promise<void> {
+  return invoke("rebind_shortcut", { id, keys });
+}

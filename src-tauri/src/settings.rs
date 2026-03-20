@@ -4,6 +4,7 @@
 //! and fall back to sensible defaults when the file doesn't exist.
 
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
@@ -19,6 +20,9 @@ pub struct Settings {
     pub ruler_shortcut: String,
     pub ruler_snap_mode: String,
     pub ruler_default_unit: String,
+    /// Centralized shortcut overrides: shortcut_id → key string
+    #[serde(default)]
+    pub shortcuts: HashMap<String, String>,
 }
 
 impl Default for Settings {
@@ -33,6 +37,7 @@ impl Default for Settings {
             ruler_shortcut: "Shift+Cmd+R".to_string(),
             ruler_snap_mode: "freehand".to_string(),
             ruler_default_unit: "px".to_string(),
+            shortcuts: HashMap::new(),
         }
     }
 }
