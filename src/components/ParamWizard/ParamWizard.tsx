@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import type { CommandDefinition, CommandResult } from "../../lib/types";
 import { executeAction } from "../../lib/tauri";
 import { ParamInput } from "./ParamInput";
+import { Button, ViewContainer } from "../../ui";
 import "./ParamWizard.css";
 
 interface ParamWizardProps {
@@ -99,39 +100,36 @@ export function ParamWizard({
   // If executing (all params were pre-filled), show a minimal executing state
   if (step >= requiredParams.length) {
     return (
-      <div className="param-wizard">
-        <div className="wizard-body">
+      <ViewContainer>
+        <ViewContainer.Body className="wizard-body">
           {error ? (
             <>
               <div className="wizard-error">{error}</div>
               <div className="wizard-actions">
-                <button
-                  className="wizard-btn wizard-btn-secondary"
-                  onClick={onCancel}
-                >
+                <Button onClick={onCancel}>
                   Back
-                </button>
-                <button
-                  className="wizard-btn wizard-btn-primary"
+                </Button>
+                <Button
+                  variant="primary"
                   onClick={() => {
                     executingRef.current = false;
                     handleExecute();
                   }}
                 >
                   Retry
-                </button>
+                </Button>
               </div>
             </>
           ) : (
             <div className="wizard-executing">Executing...</div>
           )}
-        </div>
-      </div>
+        </ViewContainer.Body>
+      </ViewContainer>
     );
   }
 
   return (
-    <div className="param-wizard">
+    <ViewContainer>
       {requiredParams.length > 1 && (
         <div className="wizard-step-bar">
           {requiredParams.map((_, i) => (
@@ -144,7 +142,7 @@ export function ParamWizard({
       )}
 
       {currentParam && (
-        <div className="wizard-body">
+        <ViewContainer.Body className="wizard-body">
           <label className="wizard-label">{currentParam.name}</label>
           <ParamInput
             param={currentParam}
@@ -154,8 +152,8 @@ export function ParamWizard({
             onSubmit={handleStepSubmit}
             autoFocus
           />
-        </div>
+        </ViewContainer.Body>
       )}
-    </div>
+    </ViewContainer>
   );
 }

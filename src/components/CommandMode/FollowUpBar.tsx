@@ -1,4 +1,5 @@
 import type { CommandDefinition } from "../../lib/types";
+import { Button } from "../../ui";
 
 interface FollowUpBarProps {
   followUpIds: string[];
@@ -21,13 +22,13 @@ export function FollowUpBar({
     <div className="follow-up-bar">
       <span className="follow-up-label">Next:</span>
       {followUps.map((cmd) => (
-        <button
+        <Button
           key={cmd.id}
-          className="follow-up-btn"
+          size="sm"
           onClick={() => onSelect(cmd)}
         >
           {cmd.name}
-        </button>
+        </Button>
       ))}
     </div>
   );

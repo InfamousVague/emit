@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { undoLastAction } from "../../lib/tauri";
+import { Button } from "../../ui";
 
 interface UndoToastProps {
   message: string;
@@ -38,13 +39,14 @@ export function UndoToast({ message, onDismiss }: UndoToastProps) {
   return (
     <div className="undo-toast">
       <span className="undo-message">{message}</span>
-      <button
-        className="undo-btn"
+      <Button
+        variant="primary"
+        size="sm"
         onClick={handleUndo}
         disabled={isUndoing}
       >
         {isUndoing ? "Undoing..." : "Undo (⌘Z)"}
-      </button>
+      </Button>
     </div>
   );
 }

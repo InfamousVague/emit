@@ -26,25 +26,6 @@
   padding: var(--space-md) var(--space-lg);
 }
 
-.cp-pick-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  width: 100%;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-bg-hover);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.cp-pick-btn:hover {
-  background: var(--color-bg-active);
-}
 
 .cp-palette-item {
   padding: var(--space-md) var(--space-lg);
@@ -127,45 +108,6 @@
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
-/* ── Save button in search bar trailing ── */
-.cp-save-trailing {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: 4px 12px;
-  background: var(--color-bg-hover);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background var(--transition-fast);
-  white-space: nowrap;
-}
-
-.cp-save-trailing:hover {
-  background: var(--color-bg-active);
-}
-
-/* ── Delete button in search bar trailing ── */
-.cp-delete-trailing {
-  display: flex;
-  align-items: center;
-  padding: 4px 8px;
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  flex-shrink: 0;
-  transition: color var(--transition-fast);
-}
-
-.cp-delete-trailing:hover {
-  color: var(--color-error);
-}
 
 .cp-detail-title-row {
   display: flex;

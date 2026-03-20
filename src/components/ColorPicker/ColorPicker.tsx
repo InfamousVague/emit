@@ -14,7 +14,7 @@ import {
 } from "../../lib/tauri";
 import { listen } from "@tauri-apps/api/event";
 import { rgbToHsl } from "../../lib/color";
-import { Kbd } from "../../ui";
+import { Button, Kbd } from "../../ui";
 import "./ColorPicker.css";
 
 interface ColorPickerProps {
@@ -184,20 +184,21 @@ export function ColorPicker({
     if (unsavedColors.length > 0 && selectedPaletteIndex === -1) {
       // Unsaved: show save button
       onTrailingChange?.(
-        <button className="cp-save-trailing" onClick={handleSavePalette}>
+        <Button size="sm" onClick={handleSavePalette}>
           <FloppyDisk size={14} weight="bold" />
           Save
-        </button>,
+        </Button>,
       );
     } else if (selectedPaletteIndex >= 0 && selectedPalette) {
       // Saved palette selected: show trash button
       onTrailingChange?.(
-        <button
-          className="cp-delete-trailing"
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => handleDeletePalette(selectedPaletteIndex)}
         >
           <Trash size={14} weight="regular" />
-        </button>,
+        </Button>,
       );
     } else {
       onTrailingChange?.(null);
@@ -279,10 +280,10 @@ export function ColorPicker({
         {/* Left: palette list */}
         <div className="cp-list" ref={listRef}>
           <div className="cp-list-header">
-            <button className="cp-pick-btn" onClick={handleLaunchPicker}>
+            <Button onClick={handleLaunchPicker} style={{ width: "100%" }}>
               <Eyedropper size={14} weight="bold" />
               Pick Colors
-            </button>
+            </Button>
           </div>
 
           {/* Unsaved colors entry */}

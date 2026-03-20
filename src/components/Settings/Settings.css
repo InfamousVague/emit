@@ -1,16 +1,3 @@
-.settings {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.settings-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-sm) var(--space-md);
-}
-
 /* ── Setting row ── */
 
 .setting-row {
@@ -48,39 +35,11 @@
   flex-shrink: 0;
 }
 
-.settings-action-btn {
-  padding: 4px 10px;
-  background: var(--color-bg-hover);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
-  white-space: nowrap;
-}
 
-.settings-action-btn:hover {
-  background: var(--color-bg-active);
-  color: var(--color-text-primary);
-}
-
-.settings-empty {
-  padding: var(--space-2xl);
-  text-align: center;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
 
 /* ── Section header ── */
 
 .settings-section-header {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted);
   padding: var(--space-lg) var(--space-lg) var(--space-xs);
   margin-top: var(--space-sm);
 }

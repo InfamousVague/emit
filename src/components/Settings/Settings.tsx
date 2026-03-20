@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Settings as SettingsType, ShortcutBinding } from "../../lib/types";
 import { getSettings, saveSettings, getShortcuts, rebindShortcut } from "../../lib/tauri";
-import { Toggle, Select, Kbd, HighlightedText } from "../../ui";
+import { Button, Toggle, Select, Kbd, HighlightedText, SectionHeader, ViewContainer } from "../../ui";
+import { EmptyState } from "../EmptyState/EmptyState";
 import { substringMatchIndices } from "../../lib/search";
 import { ShortcutRecorder } from "./ShortcutRecorder";
 import "./Settings.css";
@@ -101,9 +102,9 @@ export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
         return (
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-sm)" }}>
             {onCheckForUpdates && (
-              <button className="settings-action-btn" onClick={onCheckForUpdates}>
+              <Button size="sm" onClick={onCheckForUpdates}>
                 Check Now
-              </button>
+              </Button>
             )}
             <Toggle checked={settings.check_for_updates} onChange={(v) => update({ check_for_updates: v })} />
           </div>
@@ -149,10 +150,10 @@ export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
   const showSettings = filtered.length > 0;
 
   return (
-    <div className="settings">
-      <div className="settings-body">
+    <ViewContainer>
+      <ViewContainer.Body>
         {!showSettings && !showShortcuts ? (
-          <div className="settings-empty">No matching settings</div>
+          <EmptyState message="No matching settings" />
         ) : (
           <>
             {showSettings &&
@@ -171,7 +172,7 @@ export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
               ))}
             {showShortcuts && (
               <>
-                <div className="settings-section-header">Keyboard Shortcuts</div>
+                <SectionHeader className="settings-section-header">Keyboard Shortcuts</SectionHeader>
                 {filteredShortcuts.map((s) => (
                   <div key={s.id} className="setting-row">
                     <div className="setting-info">
@@ -191,7 +192,7 @@ export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
             )}
           </>
         )}
-      </div>
-    </div>
+      </ViewContainer.Body>
+    </ViewContainer>
   );
 }
