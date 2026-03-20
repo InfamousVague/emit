@@ -20,6 +20,30 @@
   --color-text-icon: rgba(255, 255, 255, 0.35);
   --color-text-kbd: rgba(255, 255, 255, 0.3);
 
+  /* Brand gradient */
+  --color-brand-purple: #8B5CF6;
+  --color-brand-pink: #EC4899;
+  --color-brand-blue: #3B82F6;
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-brand-purple),
+    var(--color-brand-pink),
+    var(--color-brand-blue),
+    var(--color-brand-purple)
+  );
+
+  /* Semantic colors */
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-error: #ef4444;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+
+  /* Performance thresholds: <60% good, 60-85% warn, >85% bad */
+  --color-perf-good: #4ade80;
+  --color-perf-warn: #fbbf24;
+  --color-perf-bad: #ef4444;
+
   /* Gradient border (Umbra glass style) */
   --color-gradient-border: linear-gradient(
     135deg,
@@ -30,6 +54,8 @@
   );
 
   /* Spacing */
+  --space-3xs: 1px;
+  --space-2xs: 2px;
   --space-xs: 4px;
   --space-sm: 6px;
   --space-md: 8px;
@@ -40,16 +66,26 @@
   --space-4xl: 40px;
 
   /* Font sizes */
+  --font-size-3xs: 7px;
+  --font-size-2xs: 8px;
+  --font-size-base: 12px;
   --font-size-xs: 10px;
   --font-size-sm: 11px;
   --font-size-md: 13px;
   --font-size-lg: 16px;
 
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
   /* Border radii */
+  --radius-xs: 2px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 13px;
+  --radius-round: 9999px;
 
   /* Effects */
   --blur-glass: blur(16px) saturate(180%);

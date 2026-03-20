@@ -57,3 +57,14 @@
   color: var(--color-text-secondary);
   background: var(--color-bg-hover);
 }
+
+.emit-btn--danger {
+  background: none;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--color-error);
+}
+
+.emit-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+}

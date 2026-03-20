@@ -4,3 +4,8 @@
   color: var(--color-text-tertiary);
   font-size: var(--font-size-md);
 }
+
+.empty-state__icon {
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}

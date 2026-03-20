@@ -9,3 +9,8 @@ export { ActionBar } from "./ActionBar";
 export type { Action } from "./ActionBar";
 export { TabNav } from "./TabNav";
 export type { Tab } from "./TabNav";
+export { Text } from "./Text";
+export { SectionHeader } from "./SectionHeader";
+export { Badge } from "./Badge";
+export { ListItem } from "./ListItem";
+export { ViewContainer } from "./ViewContainer";
