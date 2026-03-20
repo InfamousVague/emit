@@ -1,6 +1,6 @@
 [package]
 name = "emit"
-version = "0.2.14"
+version = "0.2.15"
 description = "Spotlight-style command launcher for macOS"
 authors = ["InfamousVague"]
 license = "MIT"
