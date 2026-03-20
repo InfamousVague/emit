@@ -113,7 +113,7 @@
 }
 
 .shortcut-recorder--conflict {
-  border-color: #ef4444;
+  border-color: var(--color-error);
 }
 
 @keyframes shortcut-pulse {

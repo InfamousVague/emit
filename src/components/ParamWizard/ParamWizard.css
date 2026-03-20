@@ -21,7 +21,7 @@
 }
 
 .wizard-dot.done {
-  background: var(--color-accent, #6366f1);
+  background: var(--color-accent, var(--color-accent));
 }
 
 .wizard-dot.active {
@@ -57,7 +57,7 @@
 }
 
 .param-text-input:focus {
-  border-color: var(--color-accent, #6366f1);
+  border-color: var(--color-accent, var(--color-accent));
 }
 
 .param-text-input::placeholder {
@@ -96,7 +96,7 @@
 }
 
 .param-option.active {
-  color: var(--color-accent, #6366f1);
+  color: var(--color-accent, var(--color-accent));
   font-weight: 500;
 }
 
@@ -116,7 +116,7 @@
 
 .param-check {
   margin-left: auto;
-  color: var(--color-accent, #6366f1);
+  color: var(--color-accent, var(--color-accent));
 }
 
 /* Multi-select chips */
@@ -132,8 +132,8 @@
   align-items: center;
   gap: 4px;
   padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--color-text-primary);
   background: var(--color-bg-hover);
@@ -219,7 +219,7 @@
 /* Error */
 
 .wizard-error {
-  color: #ef4444;
+  color: var(--color-error);
   font-size: var(--font-size-sm);
   padding: var(--space-sm) var(--space-md);
   background: rgba(239, 68, 68, 0.1);
@@ -261,9 +261,9 @@
 }
 
 .wizard-btn-primary {
-  background: var(--color-accent, #6366f1);
+  background: var(--color-accent, var(--color-accent));
   color: white;
-  border-color: var(--color-accent, #6366f1);
+  border-color: var(--color-accent, var(--color-accent));
 }
 
 .wizard-btn-primary:hover:not(:disabled) {

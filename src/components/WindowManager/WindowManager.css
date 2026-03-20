@@ -168,7 +168,7 @@
 }
 
 .wm-grid-label {
-  font-size: 9px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
   white-space: nowrap;
 }

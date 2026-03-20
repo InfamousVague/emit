@@ -44,7 +44,7 @@
   font-weight: 400;
   color: var(--color-text-primary);
   letter-spacing: -0.1px;
-  caret-color: #8B5CF6;
+  caret-color: var(--color-brand-purple);
   animation: caret-gradient 3s ease infinite;
 }
 
@@ -71,10 +71,10 @@
 }
 
 @keyframes caret-gradient {
-  0% { caret-color: #8B5CF6; }
-  33% { caret-color: #EC4899; }
-  66% { caret-color: #3B82F6; }
-  100% { caret-color: #8B5CF6; }
+  0% { caret-color: var(--color-brand-purple); }
+  33% { caret-color: var(--color-brand-pink); }
+  66% { caret-color: var(--color-brand-blue); }
+  100% { caret-color: var(--color-brand-purple); }
 }
 
 .search-input-wrapper input::placeholder {

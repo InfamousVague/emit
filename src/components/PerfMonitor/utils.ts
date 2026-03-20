@@ -19,9 +19,9 @@ export function formatBytesPerSec(bytesPerSec: number): string {
 }
 
 export function thresholdColor(value: number): string {
-  if (value < 60) return "var(--perf-green)";
-  if (value <= 85) return "var(--perf-yellow)";
-  return "var(--perf-red)";
+  if (value < 60) return "var(--color-perf-good)";
+  if (value <= 85) return "var(--color-perf-warn)";
+  return "var(--color-perf-bad)";
 }
 
 export function formatUptime(secs: number): string {

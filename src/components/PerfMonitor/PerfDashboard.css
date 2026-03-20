@@ -1,14 +1,8 @@
-/* Color threshold vars */
-:root {
-  --perf-green: #4ade80;
-  --perf-yellow: #fbbf24;
-  --perf-red: #ef4444;
-}
 
 /* Dashboard layout */
 .perf-dashboard {
   overflow-y: auto;
-  padding: 8px;
+  padding: var(--space-md);
 }
 
 /* Header */
@@ -16,13 +10,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: var(--space-md) 12px;
 }
 
 .perf-header__left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-2xl);
 }
 
 .perf-header__uptime,
@@ -45,7 +39,7 @@
   border: none;
   color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
-  padding: 4px 10px;
+  padding: var(--space-xs) var(--space-lg);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast);
@@ -65,8 +59,8 @@
 .perf-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 0 4px 14px;
+  gap: var(--space-md);
+  padding: 0 var(--space-xs) var(--space-xl);
 }
 
 /* Card base */
@@ -75,7 +69,7 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-top-color: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   padding: 12px;
   position: relative;
   overflow: hidden;
@@ -87,7 +81,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   box-shadow: inset 0 0 40px var(--card-glow);
   pointer-events: none;
   opacity: 0.5;
@@ -121,7 +115,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-md);
 }
 
 .perf-card__title {
@@ -142,7 +136,7 @@
 .perf-card__subtitle {
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
-  margin-top: 4px;
+  margin-top: var(--space-xs);
 }
 
 .perf-card__empty {
@@ -156,23 +150,23 @@
 .perf-card__breakdown {
   display: flex;
   gap: 12px;
-  margin-top: 6px;
+  margin-top: var(--space-sm);
   font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
 }
 
 /* Chart area */
 .perf-card__chart {
-  margin: 0 -4px;
+  margin: 0 calc(-1 * var(--space-xs));
 }
 
 /* Progress bar */
 .perf-progress {
-  height: 6px;
+  height: var(--space-sm);
   background: rgba(255, 255, 255, 0.06);
   border-radius: 3px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: var(--space-xs);
 }
 
 .perf-progress__fill {
@@ -185,7 +179,7 @@
 .perf-core-grid {
   display: flex;
   gap: 3px;
-  margin-top: 8px;
+  margin-top: var(--space-md);
   align-items: flex-end;
   height: 32px;
 }
@@ -198,7 +192,7 @@
   justify-content: flex-end;
   height: 100%;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   position: relative;
   overflow: hidden;
 }
@@ -207,14 +201,14 @@
   width: 100%;
   position: absolute;
   bottom: 0;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   transition: height 0.3s ease;
 }
 
 .perf-core-bar__label {
   position: relative;
   z-index: 1;
-  font-size: 7px;
+  font-size: var(--font-size-3xs);
   color: var(--color-text-tertiary);
   line-height: 1;
   margin-top: auto;
@@ -225,24 +219,24 @@
 .perf-net-speeds {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
 .perf-net-speed {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-sm);
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .perf-net-arrow {
-  font-size: 8px;
+  font-size: var(--font-size-2xs);
 }
 
 .perf-net-arrow--up {
-  color: var(--perf-green);
+  color: var(--color-perf-good);
 }
 
 .perf-net-arrow--down {
@@ -253,8 +247,8 @@
 .perf-battery-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 16px;
-  margin-top: 8px;
+  gap: var(--space-sm) var(--space-2xl);
+  margin-top: var(--space-md);
 }
 
 .perf-battery-stat {
@@ -278,7 +272,7 @@
 .perf-disk-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-md);
 }
 
 .perf-disk-row {
@@ -325,7 +319,7 @@
   text-align: left;
   font-weight: 500;
   color: var(--color-text-secondary);
-  padding: 4px 8px;
+  padding: var(--space-xs) var(--space-md);
   cursor: pointer;
   user-select: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -337,7 +331,7 @@
 }
 
 .perf-process-table tbody td {
-  padding: 3px 8px;
+  padding: 3px var(--space-md);
   color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
 }

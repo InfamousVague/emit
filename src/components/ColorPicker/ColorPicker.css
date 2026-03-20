@@ -164,7 +164,7 @@
 }
 
 .cp-delete-trailing:hover {
-  color: #ef4444;
+  color: var(--color-error);
 }
 
 .cp-detail-title-row {
@@ -192,7 +192,7 @@
 }
 
 .cp-delete-btn:hover {
-  color: #ef4444;
+  color: var(--color-error);
 }
 
 /* ── Color cards grid ── */
@@ -272,7 +272,7 @@
 }
 
 .cp-color-hex:hover {
-  color: #8b5cf6;
+  color: var(--color-brand-purple);
 }
 
 .cp-color-secondary {
@@ -299,7 +299,7 @@
 }
 
 .cp-color-remove:hover {
-  color: #ef4444;
+  color: var(--color-error);
 }
 
 /* ── Footer ── */

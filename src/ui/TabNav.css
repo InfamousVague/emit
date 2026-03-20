@@ -39,13 +39,13 @@
 }
 
 .emit-tab-nav-item.active::after {
-  background: #8B5CF6;
+  background: var(--color-brand-purple);
   animation: emit-tab-gradient 3s ease infinite;
 }
 
 @keyframes emit-tab-gradient {
-  0% { background: #8B5CF6; }
-  33% { background: #EC4899; }
-  66% { background: #3B82F6; }
-  100% { background: #8B5CF6; }
+  0% { background: var(--color-brand-purple); }
+  33% { background: var(--color-brand-pink); }
+  66% { background: var(--color-brand-blue); }
+  100% { background: var(--color-brand-purple); }
 }

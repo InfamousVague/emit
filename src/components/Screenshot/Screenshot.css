@@ -141,7 +141,7 @@
   right: 0;
   padding: 2px var(--space-xs);
   background: rgba(0, 0, 0, 0.5);
-  font-size: 9px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
