@@ -23,6 +23,9 @@ export const SETTING_DEFS: SettingDef[] = [
   { key: "show_in_dock", label: "Show in Dock", description: "Display Emit icon in the macOS Dock" },
   { key: "check_for_updates", label: "Check for Updates", description: "Automatically check for new versions" },
   { key: "max_results", label: "Max Results", description: "Maximum number of search results to show" },
+  { key: "ruler_shortcut", label: "Ruler Shortcut", description: "Global shortcut to activate Pixel Ruler" },
+  { key: "ruler_snap_mode", label: "Ruler Snap Mode", description: "Snapping behavior: freehand or edge detection" },
+  { key: "ruler_default_unit", label: "Ruler Default Unit", description: "Default measurement unit for the ruler" },
 ];
 
 function substringIndices(text: string, query: string): number[] {
@@ -87,6 +90,32 @@ export function Settings({ filter, onBack, onCheckForUpdates }: SettingsProps) {
             value={settings.max_results}
             options={[10, 15, 20, 30, 50].map((n) => ({ value: n, label: String(n) }))}
             onChange={(v) => update({ max_results: Number(v) })}
+          />
+        );
+      case "ruler_shortcut":
+        return <Kbd>{settings.ruler_shortcut || "Shift+Cmd+R"}</Kbd>;
+      case "ruler_snap_mode":
+        return (
+          <Select
+            value={settings.ruler_snap_mode}
+            options={[
+              { value: "freehand", label: "Freehand" },
+              { value: "edge", label: "Edge Detection" },
+            ]}
+            onChange={(v) => update({ ruler_snap_mode: String(v) })}
+          />
+        );
+      case "ruler_default_unit":
+        return (
+          <Select
+            value={settings.ruler_default_unit}
+            options={[
+              { value: "px", label: "Pixels (px)" },
+              { value: "pt", label: "Points (pt)" },
+              { value: "inches", label: "Inches" },
+              { value: "rem", label: "REM" },
+            ]}
+            onChange={(v) => update({ ruler_default_unit: String(v) })}
           />
         );
       default:

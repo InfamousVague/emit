@@ -64,5 +64,15 @@ pub fn all_manifests() -> Vec<ExtensionManifest> {
             default_enabled: true,
             has_settings: false,
         },
+        ExtensionManifest {
+            id: "ruler".into(),
+            name: "Pixel Ruler".into(),
+            description: "Measure distances on screen with a pixel ruler overlay".into(),
+            icon: "Ruler".into(),
+            category: "Utilities".into(),
+            bundled: true,
+            default_enabled: true,
+            has_settings: true,
+        },
     ]
 }

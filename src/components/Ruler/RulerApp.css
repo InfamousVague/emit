@@ -1,0 +1,161 @@
+/* Ruler overlay — fullscreen transparent canvas */
+
+.ruler-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  cursor: crosshair;
+}
+
+.ruler-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Zoom Panel (top-right) ───────────────────────────── */
+
+.ruler-zoom-panel {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 200px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+
+.ruler-zoom-viewport {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.ruler-zoom-image {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: pixelated;
+}
+
+.ruler-zoom-crosshair-h,
+.ruler-zoom-crosshair-v {
+  position: absolute;
+  background: rgba(255, 107, 53, 0.6);
+}
+
+.ruler-zoom-crosshair-h {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform: translateY(-0.5px);
+}
+
+.ruler-zoom-crosshair-v {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-0.5px);
+}
+
+.ruler-zoom-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ruler-zoom-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ruler-zoom-level {
+  opacity: 0.5;
+}
+
+/* ── Control Panel (bottom-right) ─────────────────────── */
+
+.ruler-control-wrapper {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  pointer-events: none;
+}
+
+.ruler-control-panel {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  min-width: 200px;
+}
+
+.ruler-control-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ruler-control-row:last-child {
+  margin-bottom: 0;
+}
+
+.ruler-control-count {
+  flex: 1;
+}
+
+.ruler-control-select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.ruler-control-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ruler-control-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ruler-control-btn-danger:hover {
+  background: rgba(255, 60, 60, 0.4);
+}
+
+.ruler-control-hint {
+  font-size: 10px;
+  opacity: 0.4;
+  text-align: center;
+}

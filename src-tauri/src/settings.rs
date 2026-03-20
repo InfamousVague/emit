@@ -16,6 +16,9 @@ pub struct Settings {
     pub max_results: usize,
     pub check_for_updates: bool,
     pub replace_spotlight: bool,
+    pub ruler_shortcut: String,
+    pub ruler_snap_mode: String,
+    pub ruler_default_unit: String,
 }
 
 impl Default for Settings {
@@ -27,6 +30,9 @@ impl Default for Settings {
             max_results: 20,
             check_for_updates: true,
             replace_spotlight: false,
+            ruler_shortcut: "Shift+Cmd+R".to_string(),
+            ruler_snap_mode: "freehand".to_string(),
+            ruler_default_unit: "px".to_string(),
         }
     }
 }

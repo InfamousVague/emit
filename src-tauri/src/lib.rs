@@ -19,6 +19,7 @@ use extensions::notion::NotionProvider;
 use extensions::password_generator::{PasswordGeneratorProvider, SharedVaultSession, VaultSession};
 use extensions::window_management::{SharedWmState, WmState, WindowManagementProvider};
 use extensions::screenshot::ScreenshotProvider;
+use extensions::ruler::RulerProvider;
 use extensions::registry::ExtensionRegistry;
 use frecency::FrecencyTracker;
 use launcher::CommandRegistry;
@@ -72,6 +73,7 @@ pub fn run() {
             registry.register(Box::new(PasswordGeneratorProvider::new()));
             registry.register(Box::new(WindowManagementProvider::new()));
             registry.register(Box::new(ScreenshotProvider::new()));
+            registry.register(Box::new(RulerProvider::new()));
 
             let registry = Arc::new(RwLock::new(registry));
 
@@ -243,6 +245,14 @@ pub fn run() {
             extensions::screenshot::screenshot_delete,
             extensions::screenshot::screenshot_copy,
             extensions::screenshot::screenshot_get_image,
+            // Pixel ruler
+            extensions::ruler::ruler_open,
+            extensions::ruler::ruler_close,
+            extensions::ruler::ruler_get_all_screens,
+            extensions::ruler::ruler_capture_region,
+            extensions::ruler::ruler_detect_edges,
+            extensions::ruler::ruler_copy_measurements,
+            extensions::ruler::ruler_screenshot_overlay,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

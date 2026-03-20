@@ -321,3 +321,44 @@ export async function screenshotCopy(id: string): Promise<void> {
 export async function screenshotGetImage(path: string): Promise<string> {
   return invoke("screenshot_get_image", { path });
 }
+
+// --- Ruler ---
+
+export async function rulerOpen(): Promise<void> {
+  return invoke("ruler_open");
+}
+
+export async function rulerClose(): Promise<void> {
+  return invoke("ruler_close");
+}
+
+export async function rulerGetAllScreens(): Promise<
+  import("./types").ScreenInfo[]
+> {
+  return invoke("ruler_get_all_screens");
+}
+
+export async function rulerCaptureRegion(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+): Promise<string> {
+  return invoke("ruler_capture_region", { x, y, width, height });
+}
+
+export async function rulerDetectEdges(
+  x: number,
+  y: number,
+  radius: number,
+): Promise<import("./types").RulerEdgePoint[]> {
+  return invoke("ruler_detect_edges", { x, y, radius });
+}
+
+export async function rulerCopyMeasurements(data: string): Promise<void> {
+  return invoke("ruler_copy_measurements", { data });
+}
+
+export async function rulerScreenshotOverlay(): Promise<string> {
+  return invoke("ruler_screenshot_overlay");
+}

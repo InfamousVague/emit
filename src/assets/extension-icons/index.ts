@@ -3,6 +3,7 @@ import colorPickerIcon from "./color-picker.png";
 import marketplaceIcon from "./marketplace.png";
 import passwordGeneratorIcon from "./password-generator.png";
 import windowManagementIcon from "./window-management.png";
+import rulerIcon from "./ruler.jpg";
 import screenshotIcon from "./screenshot.jpg";
 
 /** Maps extension IDs to their custom icon asset URLs. */
@@ -12,6 +13,7 @@ export const EXTENSION_ICONS: Record<string, string> = {
   "marketplace": marketplaceIcon,
   "password-generator": passwordGeneratorIcon,
   "screenshot": screenshotIcon,
+  "ruler": rulerIcon,
   "window-management": windowManagementIcon,
 };
 
@@ -22,6 +24,7 @@ export const COMMAND_EXTENSION_ICONS: Record<string, string> = {
   "system.marketplace": marketplaceIcon,
   "pwgen.open": passwordGeneratorIcon,
   "screenshot.open": screenshotIcon,
+  "ruler.open": rulerIcon,
   "wm.open": windowManagementIcon,
   "wm.snap.left_half": windowManagementIcon,
   "wm.snap.right_half": windowManagementIcon,

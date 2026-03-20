@@ -25,6 +25,7 @@ import {
   executeCommand,
   getSettings,
   hideWindow,
+  rulerOpen,
   resolveParamOptions,
   saveSettings,
   searchCommands,
@@ -207,6 +208,8 @@ export function App() {
       } else if (result === "view:screenshot") {
         setQuery("");
         setView("screenshot");
+      } else if (result === "action:ruler") {
+        await rulerOpen();
       } else if (result.startsWith("action:wm.snap.")) {
         const position = result.replace("action:wm.snap.", "");
         const posMap: Record<string, import("./lib/types").SnapPosition> = {

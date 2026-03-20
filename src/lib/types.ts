@@ -15,6 +15,9 @@ export interface Settings {
   max_results: number;
   check_for_updates: boolean;
   replace_spotlight: boolean;
+  ruler_shortcut: string;
+  ruler_snap_mode: string;
+  ruler_default_unit: string;
 }
 
 export interface ClipboardMetadata {
@@ -220,4 +223,12 @@ export interface CommandResult {
   data: unknown;
   follow_ups: string[];
   undo_data: unknown;
+}
+
+// --- Ruler Types ---
+
+export interface RulerEdgePoint {
+  x: number;
+  y: number;
+  direction: string;
 }
