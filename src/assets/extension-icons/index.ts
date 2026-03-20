@@ -2,6 +2,7 @@ import clipboardIcon from "./clipboard.png";
 import colorPickerIcon from "./color-picker.png";
 import marketplaceIcon from "./marketplace.png";
 import passwordGeneratorIcon from "./password-generator.png";
+import performanceMonitorIcon from "./performance-monitor.png";
 import windowManagementIcon from "./window-management.png";
 import rulerIcon from "./ruler.jpg";
 import screenshotIcon from "./screenshot.jpg";
@@ -12,6 +13,7 @@ export const EXTENSION_ICONS: Record<string, string> = {
   "color-picker": colorPickerIcon,
   "marketplace": marketplaceIcon,
   "password-generator": passwordGeneratorIcon,
+  "perf-monitor": performanceMonitorIcon,
   "screenshot": screenshotIcon,
   "ruler": rulerIcon,
   "window-management": windowManagementIcon,
@@ -23,6 +25,15 @@ export const COMMAND_EXTENSION_ICONS: Record<string, string> = {
   "color_picker.open": colorPickerIcon,
   "system.marketplace": marketplaceIcon,
   "pwgen.open": passwordGeneratorIcon,
+  "perf.open": performanceMonitorIcon,
+  "perf.cpu": performanceMonitorIcon,
+  "perf.memory": performanceMonitorIcon,
+  "perf.disk": performanceMonitorIcon,
+  "perf.network": performanceMonitorIcon,
+  "perf.gpu": performanceMonitorIcon,
+  "perf.battery": performanceMonitorIcon,
+  "perf.uptime": performanceMonitorIcon,
+  "perf.dashboard": performanceMonitorIcon,
   "screenshot.open": screenshotIcon,
   "ruler.open": rulerIcon,
   "wm.open": windowManagementIcon,
