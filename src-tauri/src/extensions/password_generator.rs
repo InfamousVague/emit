@@ -3,7 +3,7 @@ use std::sync::Arc;
 use std::time::Instant;
 
 use async_trait::async_trait;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use tokio::sync::RwLock;
 use zeroize::Zeroize;
 
@@ -234,6 +234,7 @@ pub struct GeneratePasswordOpts {
     pub passphrase: bool,
     pub word_count: Option<usize>,
     pub separator: Option<String>,
+    #[allow(dead_code)]
     pub label: Option<String>,
 }
 

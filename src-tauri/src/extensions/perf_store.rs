@@ -1,6 +1,5 @@
 //! Ring buffer for metric history + persistence.
 
-use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -70,6 +69,7 @@ impl MetricsStore {
         dir.join("perf_history.bin")
     }
 
+    #[allow(dead_code)]
     pub fn save_to_disk(&self) {
         let path = Self::storage_path();
         // Only save the last hour of data to keep file size reasonable

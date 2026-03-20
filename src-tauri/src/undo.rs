@@ -34,6 +34,7 @@ impl UndoStack {
         self.last_action.take()
     }
 
+    #[allow(dead_code)]
     pub fn peek(&self) -> Option<&UndoEntry> {
         if self.is_expired() {
             return None;

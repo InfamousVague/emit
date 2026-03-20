@@ -8,7 +8,7 @@
 /* Dashboard layout */
 .perf-dashboard {
   overflow-y: auto;
-  padding: 8px;
+  padding: 8px 8px 12px;
 }
 
 /* Header */
@@ -73,13 +73,35 @@
 .perf-card {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   padding: 12px;
   position: relative;
   overflow: hidden;
   min-height: 0;
+  --card-glow: rgba(74, 222, 128, 0.06);
 }
+
+.perf-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  box-shadow: inset 0 0 40px var(--card-glow);
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 0.5s ease;
+}
+
+/* Per-card glow colors — set by data-card attribute */
+[data-card="cpu"] { --card-glow: rgba(96, 165, 250, 0.08); }
+[data-card="memory"] { --card-glow: rgba(167, 139, 250, 0.08); }
+[data-card="network"] { --card-glow: rgba(74, 222, 128, 0.08); }
+[data-card="gpu"] { --card-glow: rgba(251, 191, 36, 0.08); }
+[data-card="battery"] { --card-glow: rgba(52, 211, 153, 0.08); }
+[data-card="disk"] { --card-glow: rgba(244, 114, 182, 0.08); }
+[data-card="processes"] { --card-glow: rgba(148, 163, 184, 0.05); }
 
 .perf-card--2x2 {
   grid-column: span 2;

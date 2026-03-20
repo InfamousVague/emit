@@ -119,11 +119,13 @@ pub type SharedAlertConfig = Arc<RwLock<AlertConfig>>;
 
 // ── Command Provider ─────────────────────────────────────────────────────────
 
-pub struct PerfMonitorProvider;
+pub struct PerfMonitorProvider {
+    store: Option<SharedMetricsStore>,
+}
 
 impl PerfMonitorProvider {
-    pub fn new() -> Self {
-        Self
+    pub fn with_store(store: SharedMetricsStore) -> Self {
+        Self { store: Some(store) }
     }
 }
 
@@ -153,14 +155,62 @@ impl CommandProvider for PerfMonitorProvider {
         let q = query.to_lowercase();
         let mut results = Vec::new();
 
-        let metrics = [
-            ("perf.cpu", "CPU Usage", "View CPU utilization and per-core stats", &["cpu", "processor", "perf", "monitor", "performance"][..]),
-            ("perf.memory", "Memory Usage", "View RAM utilization breakdown", &["ram", "memory", "mem", "perf", "monitor", "performance"]),
-            ("perf.disk", "Disk Usage", "View storage usage for all volumes", &["disk", "storage", "drive", "ssd", "perf", "monitor", "performance"]),
-            ("perf.network", "Network Activity", "View upload/download speeds and connections", &["network", "net", "wifi", "internet", "bandwidth", "perf", "monitor", "performance"]),
-            ("perf.gpu", "GPU Usage", "View GPU utilization", &["gpu", "graphics", "perf", "monitor", "performance"]),
-            ("perf.battery", "Battery Status", "View battery charge, health, and power info", &["battery", "power", "charge", "perf", "monitor", "performance"]),
-            ("perf.uptime", "System Uptime", "View system uptime and load averages", &["uptime", "load", "perf", "monitor", "performance"]),
+        // Get live snapshot for inline readouts
+        let snap = if let Some(ref store) = self.store {
+            let s = store.read().await;
+            s.buffer.back().cloned()
+        } else {
+            None
+        };
+
+        let metrics: Vec<(&str, &str, String, &[&str])> = vec![
+            ("perf.cpu", "CPU Usage", {
+                if let Some(ref s) = snap {
+                    format!("{:.1}% — {} cores", s.cpu.total_usage, s.cpu.per_core.len())
+                } else { "View CPU utilization and per-core stats".into() }
+            }, &["cpu", "processor", "perf", "monitor", "performance"]),
+            ("perf.memory", "Memory Usage", {
+                if let Some(ref s) = snap {
+                    let pct = if s.memory.total > 0 { (s.memory.used as f64 / s.memory.total as f64) * 100.0 } else { 0.0 };
+                    format!("{:.1}% — {} / {}", pct, format_bytes_inline(s.memory.used), format_bytes_inline(s.memory.total))
+                } else { "View RAM utilization breakdown".into() }
+            }, &["ram", "memory", "mem", "perf", "monitor", "performance"]),
+            ("perf.disk", "Disk Usage", {
+                if let Some(ref s) = snap {
+                    if let Some(d) = s.disks.first() {
+                        let pct = if d.total > 0 { (d.used as f64 / d.total as f64) * 100.0 } else { 0.0 };
+                        format!("{:.1}% — {} / {}", pct, format_bytes_inline(d.used), format_bytes_inline(d.total))
+                    } else { "View storage usage for all volumes".into() }
+                } else { "View storage usage for all volumes".into() }
+            }, &["disk", "storage", "drive", "ssd", "perf", "monitor", "performance"]),
+            ("perf.network", "Network Activity", {
+                if let Some(ref s) = snap {
+                    format!("↓ {}/s  ↑ {}/s", format_bytes_inline(s.network.download_speed), format_bytes_inline(s.network.upload_speed))
+                } else { "View upload/download speeds and connections".into() }
+            }, &["network", "net", "wifi", "internet", "bandwidth", "perf", "monitor", "performance"]),
+            ("perf.gpu", "GPU Usage", {
+                if let Some(ref s) = snap {
+                    if let Some(ref g) = s.gpu { format!("{:.1}% — {}", g.utilization, g.name) } else { "No GPU data".into() }
+                } else { "View GPU utilization".into() }
+            }, &["gpu", "graphics", "perf", "monitor", "performance"]),
+            ("perf.battery", "Battery Status", {
+                if let Some(ref s) = snap {
+                    if let Some(ref b) = s.battery {
+                        format!("{:.0}%{} — Health {:.0}%", b.charge_percent, if b.is_charging { " ⚡" } else { "" }, b.health_percent)
+                    } else { "No battery detected".into() }
+                } else { "View battery charge, health, and power info".into() }
+            }, &["battery", "power", "charge", "perf", "monitor", "performance"]),
+            ("perf.uptime", "System Uptime", {
+                if let Some(ref s) = snap {
+                    let secs = s.system.uptime_secs;
+                    let d = secs / 86400; let h = (secs % 86400) / 3600; let m = (secs % 3600) / 60;
+                    let mut parts = Vec::new();
+                    if d > 0 { parts.push(format!("{}d", d)); }
+                    if h > 0 { parts.push(format!("{}h", h)); }
+                    parts.push(format!("{}m", m));
+                    format!("{} — Load {:.2} {:.2} {:.2}", parts.join(" "), s.cpu.load_avg_1, s.cpu.load_avg_5, s.cpu.load_avg_15)
+                } else { "View system uptime and load averages".into() }
+            }, &["uptime", "load", "perf", "monitor", "performance"]),
         ];
 
         for (id, name, desc, keywords) in &metrics {
@@ -168,7 +218,7 @@ impl CommandProvider for PerfMonitorProvider {
                 results.push(CommandEntry {
                     id: id.to_string(),
                     name: name.to_string(),
-                    description: desc.to_string(),
+                    description: desc.clone(),
                     category: "Performance".into(),
                     icon: None,
                     match_indices: vec![],
@@ -203,6 +253,18 @@ impl CommandProvider for PerfMonitorProvider {
             extension_id: "perf-monitor".into(),
         }]
     }
+}
+
+fn format_bytes_inline(bytes: u64) -> String {
+    const KB: u64 = 1024;
+    const MB: u64 = 1024 * 1024;
+    const GB: u64 = 1024 * 1024 * 1024;
+    const TB: u64 = 1024 * 1024 * 1024 * 1024;
+    if bytes >= TB { format!("{:.1} TB", bytes as f64 / TB as f64) }
+    else if bytes >= GB { format!("{:.1} GB", bytes as f64 / GB as f64) }
+    else if bytes >= MB { format!("{:.1} MB", bytes as f64 / MB as f64) }
+    else if bytes >= KB { format!("{:.1} KB", bytes as f64 / KB as f64) }
+    else { format!("{} B", bytes) }
 }
 
 // ── Collector ────────────────────────────────────────────────────────────────
@@ -609,7 +671,7 @@ mod tests {
 
     #[test]
     fn test_perf_provider() {
-        let provider = PerfMonitorProvider::new();
+        let provider = PerfMonitorProvider { store: None };
         assert_eq!(provider.name(), "PerfMonitor");
         assert!(provider.is_dynamic());
         assert_eq!(

@@ -79,6 +79,7 @@ impl FrecencyTracker {
         entry.frequency as f64 * (-DECAY_RATE * hours_since).exp()
     }
 
+    #[allow(dead_code)]
     /// Return IDs sorted by score descending.
     pub fn ranked(&self) -> Vec<String> {
         let mut scored: Vec<(String, f64)> = self
@@ -90,6 +91,7 @@ impl FrecencyTracker {
         scored.into_iter().map(|(id, _)| id).collect()
     }
 
+    #[allow(dead_code)]
     /// Return recently used IDs matching a prefix, sorted by score.
     pub fn recent_with_prefix(&self, prefix: &str) -> Vec<String> {
         let mut scored: Vec<(String, f64)> = self

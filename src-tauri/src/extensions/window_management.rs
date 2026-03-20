@@ -151,13 +151,13 @@ pub(crate) mod macos {
     use std::os::raw::c_int;
 
     type AXUIElementRef = CFTypeRef;
-    type pid_t = i32;
+    type PidT = i32;
 
     #[link(name = "ApplicationServices", kind = "framework")]
     extern "C" {
         fn AXIsProcessTrusted() -> bool;
         fn AXIsProcessTrustedWithOptions(options: CFTypeRef) -> bool;
-        fn AXUIElementCreateApplication(pid: pid_t) -> AXUIElementRef;
+        fn AXUIElementCreateApplication(pid: PidT) -> AXUIElementRef;
         fn AXUIElementCopyAttributeValue(
             element: AXUIElementRef,
             attribute: CFTypeRef,
@@ -547,27 +547,6 @@ const SNAP_COMMANDS: &[SnapCommand] = &[
     SnapCommand { id: "wm.snap.center", name: "Center Window", description: "Center focused window at 70% of screen" },
 ];
 
-pub fn snap_id_to_position(id: &str) -> Option<SnapPosition> {
-    match id {
-        "wm.snap.left_half" => Some(SnapPosition::LeftHalf),
-        "wm.snap.right_half" => Some(SnapPosition::RightHalf),
-        "wm.snap.top_half" => Some(SnapPosition::TopHalf),
-        "wm.snap.bottom_half" => Some(SnapPosition::BottomHalf),
-        "wm.snap.top_left" => Some(SnapPosition::TopLeftQuarter),
-        "wm.snap.top_right" => Some(SnapPosition::TopRightQuarter),
-        "wm.snap.bottom_left" => Some(SnapPosition::BottomLeftQuarter),
-        "wm.snap.bottom_right" => Some(SnapPosition::BottomRightQuarter),
-        "wm.snap.left_third" => Some(SnapPosition::LeftThird),
-        "wm.snap.center_third" => Some(SnapPosition::CenterThird),
-        "wm.snap.right_third" => Some(SnapPosition::RightThird),
-        "wm.snap.left_two_thirds" => Some(SnapPosition::LeftTwoThirds),
-        "wm.snap.right_two_thirds" => Some(SnapPosition::RightTwoThirds),
-        "wm.snap.maximize" => Some(SnapPosition::Maximize),
-        "wm.snap.center" => Some(SnapPosition::Center),
-        _ => None,
-    }
-}
-
 #[async_trait]
 impl CommandProvider for WindowManagementProvider {
     fn name(&self) -> &str {
@@ -838,13 +817,6 @@ mod tests {
         assert!((r.height - expected_h).abs() < 0.01);
         // Should be centered
         assert!((r.x - (1920.0 - expected_w) / 2.0).abs() < 0.01);
-    }
-
-    #[test]
-    fn test_snap_id_to_position() {
-        assert!(matches!(snap_id_to_position("wm.snap.left_half"), Some(SnapPosition::LeftHalf)));
-        assert!(matches!(snap_id_to_position("wm.snap.maximize"), Some(SnapPosition::Maximize)));
-        assert!(snap_id_to_position("invalid").is_none());
     }
 
     #[test]

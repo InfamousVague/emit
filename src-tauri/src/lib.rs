@@ -96,6 +96,10 @@ pub fn run() {
             let ext_registry = Arc::new(RwLock::new(ExtensionRegistry::load()));
             app.manage(Arc::clone(&ext_registry));
 
+            // Performance monitor store (created early so provider can access it)
+            let metrics_store: SharedMetricsStore =
+                Arc::new(RwLock::new(extensions::perf_store::MetricsStore::load_from_disk()));
+
             // Build command registry with all providers
             let mut registry = CommandRegistry::new();
             let providers: Vec<Box<dyn CommandProvider>> = vec![
@@ -109,7 +113,7 @@ pub fn run() {
                 Box::new(WindowManagementProvider::new()),
                 Box::new(ScreenshotProvider::new()),
                 Box::new(RulerProvider::new()),
-                Box::new(PerfMonitorProvider::new()),
+                Box::new(PerfMonitorProvider::with_store(Arc::clone(&metrics_store))),
             ];
 
             // Collect shortcuts from all providers before registering them
@@ -165,9 +169,7 @@ pub fn run() {
             clipboard::start_monitor(Arc::clone(&clip_state));
             app.manage(clip_state);
 
-            // Performance monitor
-            let metrics_store: SharedMetricsStore =
-                Arc::new(RwLock::new(extensions::perf_store::MetricsStore::load_from_disk()));
+            // Performance monitor collector + alerts
             let alert_config: SharedAlertConfig =
                 Arc::new(RwLock::new(extensions::perf_monitor::load_alert_config()));
             extensions::perf_monitor::start_collector(

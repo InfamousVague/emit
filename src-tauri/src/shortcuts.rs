@@ -204,35 +204,6 @@ fn parse_key_code(s: &str) -> Result<Code, String> {
     }
 }
 
-/// Convert a Tauri Code back to a human-readable string.
-pub fn code_to_string(code: &Code) -> &'static str {
-    match code {
-        Code::KeyA => "A", Code::KeyB => "B", Code::KeyC => "C",
-        Code::KeyD => "D", Code::KeyE => "E", Code::KeyF => "F",
-        Code::KeyG => "G", Code::KeyH => "H", Code::KeyI => "I",
-        Code::KeyJ => "J", Code::KeyK => "K", Code::KeyL => "L",
-        Code::KeyM => "M", Code::KeyN => "N", Code::KeyO => "O",
-        Code::KeyP => "P", Code::KeyQ => "Q", Code::KeyR => "R",
-        Code::KeyS => "S", Code::KeyT => "T", Code::KeyU => "U",
-        Code::KeyV => "V", Code::KeyW => "W", Code::KeyX => "X",
-        Code::KeyY => "Y", Code::KeyZ => "Z",
-        Code::Digit0 => "0", Code::Digit1 => "1", Code::Digit2 => "2",
-        Code::Digit3 => "3", Code::Digit4 => "4", Code::Digit5 => "5",
-        Code::Digit6 => "6", Code::Digit7 => "7", Code::Digit8 => "8",
-        Code::Digit9 => "9",
-        Code::Space => "Space", Code::Enter => "Enter",
-        Code::Escape => "Escape", Code::Tab => "Tab",
-        Code::Backspace => "Backspace", Code::Delete => "Delete",
-        Code::ArrowUp => "Up", Code::ArrowDown => "Down",
-        Code::ArrowLeft => "Left", Code::ArrowRight => "Right",
-        Code::F1 => "F1", Code::F2 => "F2", Code::F3 => "F3",
-        Code::F4 => "F4", Code::F5 => "F5", Code::F6 => "F6",
-        Code::F7 => "F7", Code::F8 => "F8", Code::F9 => "F9",
-        Code::F10 => "F10", Code::F11 => "F11", Code::F12 => "F12",
-        _ => "?",
-    }
-}
-
 // ── Tauri commands ───────────────────────────────────────────────────────────
 
 #[tauri::command]
