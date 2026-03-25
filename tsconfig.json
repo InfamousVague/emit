@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@base/*": ["../../base/*"]
+      "@base/*": ["node_modules/@mattmattmattmatt/base/*"]
     }
   },
   "include": ["src"]

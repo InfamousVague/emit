@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/InfamousVague/emit#readme",
   "dependencies": {
+    "@mattmattmattmatt/base": "^0.1.1",
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-shell": "^2.3.5",
