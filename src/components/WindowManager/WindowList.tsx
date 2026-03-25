@@ -1,4 +1,5 @@
-import { AppWindow } from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { appWindow } from "../../lib/icons";
 import { useEffect, useState } from "react";
 import type { WindowInfo } from "../../lib/types";
 import { wmGetAppIcon } from "../../lib/tauri";
@@ -53,7 +54,7 @@ export function WindowList({ windows, selectedId, filter, onSelect }: Props) {
               {iconUri ? (
                 <img src={iconUri} alt="" width={20} height={20} />
               ) : (
-                <AppWindow size={20} weight="duotone" />
+                <Icon icon={appWindow} size="base" />
               )}
             </div>
             <div className="wm-window-info">

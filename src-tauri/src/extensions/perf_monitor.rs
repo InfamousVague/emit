@@ -140,7 +140,7 @@ impl CommandProvider for PerfMonitorProvider {
             id: "perf.open".into(),
             name: "Performance Monitor".into(),
             description: "View real-time system metrics and performance dashboard".into(),
-            category: "Extensions".into(),
+            category: "Developer Tools".into(),
             icon: None,
             match_indices: vec![],
             score: 0,
@@ -219,7 +219,7 @@ impl CommandProvider for PerfMonitorProvider {
                     id: id.to_string(),
                     name: name.to_string(),
                     description: desc.clone(),
-                    category: "Performance".into(),
+                    category: "Developer Tools".into(),
                     icon: None,
                     match_indices: vec![],
                     score: 80,
@@ -292,12 +292,22 @@ pub fn start_collector(
         sys.refresh_all();
         std::thread::sleep(Duration::from_millis(500));
 
+        let mut tick: u64 = 0;
+
         loop {
             sys.refresh_cpu_usage();
             sys.refresh_memory();
-            sys.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
             networks.refresh(true);
-            disks.refresh(true);
+
+            // Heavy operations on staggered intervals to reduce memory/CPU pressure
+            // Processes: every 5 seconds (tick % 10 == 0)
+            if tick % 10 == 0 {
+                sys.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
+            }
+            // Disks: every 10 seconds (tick % 20 == 0)
+            if tick % 20 == 0 {
+                disks.refresh(true);
+            }
 
             let timestamp = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
@@ -314,8 +324,13 @@ pub fn start_collector(
             let used_mem = sys.used_memory();
             let available_mem = sys.available_memory();
 
-            // Memory breakdown via vm_stat (macOS-specific)
-            let (wired, compressed, app_memory) = get_memory_breakdown();
+            // Memory breakdown via vm_stat (macOS-specific) — every 5 seconds
+            let (wired, compressed, app_memory) = if tick % 10 == 2 || tick == 0 {
+                get_memory_breakdown()
+            } else {
+                let s = store.read().await;
+                s.buffer.back().map(|snap| (snap.memory.wired, snap.memory.compressed, snap.memory.app_memory)).unwrap_or((0, 0, 0))
+            };
 
             // Disk
             let disk_metrics: Vec<DiskMetrics> = disks
@@ -358,11 +373,22 @@ pub fn start_collector(
             prev_rx = total_rx;
             prev_tx = total_tx;
 
-            // GPU
-            let gpu = super::perf_gpu::get_gpu_utilization();
+            // GPU: every 5 seconds (tick % 10 == 5, offset from processes)
+            let gpu = if tick % 10 == 5 || tick == 0 {
+                super::perf_gpu::get_gpu_utilization()
+            } else {
+                // Reuse last snapshot's GPU data
+                let s = store.read().await;
+                s.buffer.back().and_then(|snap| snap.gpu.clone())
+            };
 
-            // Battery
-            let battery = super::perf_battery::get_battery_info();
+            // Battery: every 30 seconds (tick % 60 == 0)
+            let battery = if tick % 60 == 0 {
+                super::perf_battery::get_battery_info()
+            } else {
+                let s = store.read().await;
+                s.buffer.back().and_then(|snap| snap.battery.clone())
+            };
 
             // System
             let uptime = sysinfo::System::uptime();
@@ -400,26 +426,28 @@ pub fn start_collector(
                 },
             };
 
-            // Collect top processes
-            let mut procs: Vec<ProcessInfo> = sys
-                .processes()
-                .values()
-                .map(|p| ProcessInfo {
-                    pid: p.pid().as_u32(),
-                    name: p.name().to_string_lossy().to_string(),
-                    cpu_usage: p.cpu_usage(),
-                    memory_bytes: p.memory(),
-                })
-                .filter(|p| p.cpu_usage > 0.0 || p.memory_bytes > 10_000_000)
-                .collect();
-            procs.sort_by(|a, b| b.cpu_usage.partial_cmp(&a.cpu_usage).unwrap_or(std::cmp::Ordering::Equal));
-            procs.truncate(50);
+            // Collect top processes (only when we refreshed them)
+            if tick % 10 == 0 {
+                let mut procs: Vec<ProcessInfo> = sys
+                    .processes()
+                    .values()
+                    .map(|p| ProcessInfo {
+                        pid: p.pid().as_u32(),
+                        name: p.name().to_string_lossy().to_string(),
+                        cpu_usage: p.cpu_usage(),
+                        memory_bytes: p.memory(),
+                    })
+                    .filter(|p| p.cpu_usage > 0.0 || p.memory_bytes > 10_000_000)
+                    .collect();
+                procs.sort_by(|a, b| b.cpu_usage.partial_cmp(&a.cpu_usage).unwrap_or(std::cmp::Ordering::Equal));
+                procs.truncate(50);
 
-            // Store
-            {
                 let mut s = store.write().await;
                 s.push(snapshot.clone());
                 s.processes = procs;
+            } else {
+                let mut s = store.write().await;
+                s.push(snapshot.clone());
             }
 
             // Check alerts
@@ -428,6 +456,7 @@ pub fn start_collector(
             // Emit to frontend
             let _ = app.emit("perf-update", &snapshot);
 
+            tick = tick.wrapping_add(1);
             tokio::time::sleep(Duration::from_millis(500)).await;
         }
     });

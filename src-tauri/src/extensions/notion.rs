@@ -153,7 +153,7 @@ impl CommandProvider for NotionProvider {
             id: "notion.open".into(),
             name: "Notion".into(),
             description: "Search and browse Notion pages".into(),
-            category: "Extensions".into(),
+            category: "Productivity".into(),
             icon: None,
             match_indices: vec![],
             score: 0,

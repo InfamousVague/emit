@@ -327,6 +327,56 @@ export interface AlertConfig {
 
 export type TimeRange = "1m" | "5m" | "15m" | "1hr";
 
+// --- Port Pilot Types ---
+
+export interface PortListener {
+  port: number;
+  protocol: string;
+  pid: number;
+  process_name: string;
+  command: string;
+  user: string;
+  state: string;
+}
+
+export interface PortGroup {
+  port: number;
+  listeners: PortListener[];
+}
+
+// --- Env Vault Types ---
+
+export interface EnvFile {
+  file_path: string;
+  filename: string;
+  env_label: string;
+  project: string;
+  relative_dir: string;
+  var_count: number;
+  variables: EnvVariable[];
+}
+
+export interface EnvVariable {
+  key: string;
+  value: string;
+}
+
+export interface EnvVaultConfig {
+  scan_dirs: string[];
+}
+
+// --- Bitwarden Types ---
+
+export interface VaultItem {
+  id: string;
+  name: string;
+  username: string;
+  uri: string;
+  folder: string;
+  item_type: string;
+  has_totp: boolean;
+}
+
 // --- Shortcut Types ---
 
 export interface ShortcutBinding {

@@ -1,4 +1,4 @@
-import "./Select.css";
+import { Select as BaseSelect } from "@base/primitives/select/Select";
 
 interface SelectOption {
   value: string | number;
@@ -14,16 +14,17 @@ interface SelectProps {
 
 export function Select({ value, options, onChange, variant = "default" }: SelectProps) {
   return (
-    <select
-      className={`emit-select ${variant === "pill" ? "emit-select--pill" : ""}`}
+    <BaseSelect
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(e.target.value)}
+      shape={variant === "pill" ? "pill" : "default"}
+      size="sm"
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
           {opt.label}
         </option>
       ))}
-    </select>
+    </BaseSelect>
   );
 }

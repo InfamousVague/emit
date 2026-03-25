@@ -5,6 +5,7 @@ import passwordGeneratorIcon from "./password-generator.png";
 import performanceMonitorIcon from "./performance-monitor.png";
 import windowManagementIcon from "./window-management.png";
 import rulerIcon from "./ruler.jpg";
+import portPilotIcon from "./port-pilot.jpg";
 import screenshotIcon from "./screenshot.jpg";
 
 /** Maps extension IDs to their custom icon asset URLs. */
@@ -14,6 +15,7 @@ export const EXTENSION_ICONS: Record<string, string> = {
   "marketplace": marketplaceIcon,
   "password-generator": passwordGeneratorIcon,
   "perf-monitor": performanceMonitorIcon,
+  "port-pilot": portPilotIcon,
   "screenshot": screenshotIcon,
   "ruler": rulerIcon,
   "window-management": windowManagementIcon,
@@ -34,6 +36,7 @@ export const COMMAND_EXTENSION_ICONS: Record<string, string> = {
   "perf.battery": performanceMonitorIcon,
   "perf.uptime": performanceMonitorIcon,
   "perf.dashboard": performanceMonitorIcon,
+  "port-pilot.dashboard": portPilotIcon,
   "screenshot.open": screenshotIcon,
   "ruler.open": rulerIcon,
   "wm.open": windowManagementIcon,

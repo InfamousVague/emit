@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Selection,
-  AppWindow,
-  Desktop,
-  Copy,
-  Trash,
-  ArrowLeft,
-} from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { scan, appWindow, monitor, copy, trash2, arrowLeft } from "../../lib/icons";
 import type { ScreenshotItem } from "../../lib/types";
 import {
   screenshotCaptureRegion,
@@ -18,7 +12,7 @@ import {
   screenshotGetImage,
 } from "../../lib/tauri";
 import { listen } from "@tauri-apps/api/event";
-import { Kbd } from "../../ui";
+import { Button, Kbd } from "../../ui";
 import "./Screenshot.css";
 
 interface ScreenshotProps {
@@ -111,25 +105,24 @@ export function Screenshot({ filter, onBack, onTrailingChange }: ScreenshotProps
     return (
       <div className="screenshot">
         <div className="screenshot-detail-header">
-          <button
-            className="screenshot-action-btn"
-            onClick={() => setDetailItem(null)}
-          >
-            <ArrowLeft size={12} weight="regular" /> Back
-          </button>
+          <Button size="sm" variant="ghost" onClick={() => setDetailItem(null)}>
+            <Icon icon={arrowLeft} size="sm" /> Back
+          </Button>
           <div className="screenshot-detail-header-actions">
-            <button
-              className="screenshot-action-btn"
+            <Button
+              size="sm"
+              variant="ghost"
               onClick={(e) => handleCopy(e, detailItem.id)}
             >
-              <Copy size={12} weight="regular" /> Copy
-            </button>
-            <button
-              className="screenshot-action-btn"
+              <Icon icon={copy} size="sm" /> Copy
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
               onClick={(e) => handleDelete(e, detailItem.id)}
             >
-              <Trash size={12} weight="regular" /> Delete
-            </button>
+              <Icon icon={trash2} size="sm" /> Delete
+            </Button>
           </div>
         </div>
         <div className="screenshot-detail">
@@ -158,7 +151,7 @@ export function Screenshot({ filter, onBack, onTrailingChange }: ScreenshotProps
         <div className="screenshot-options">
           <button className="screenshot-option-row" onClick={() => screenshotCaptureRegion()}>
             <div className="screenshot-option-info">
-              <Selection size={16} weight="regular" className="screenshot-option-icon" />
+              <Icon icon={scan} size="sm" className="screenshot-option-icon" />
               <div className="screenshot-option-text">
                 <span className="screenshot-option-label">Capture Region</span>
                 <span className="screenshot-option-desc">Select an area to capture</span>
@@ -168,7 +161,7 @@ export function Screenshot({ filter, onBack, onTrailingChange }: ScreenshotProps
           </button>
           <button className="screenshot-option-row" onClick={() => screenshotCaptureWindow()}>
             <div className="screenshot-option-info">
-              <AppWindow size={16} weight="regular" className="screenshot-option-icon" />
+              <Icon icon={appWindow} size="sm" className="screenshot-option-icon" />
               <div className="screenshot-option-text">
                 <span className="screenshot-option-label">Capture Window</span>
                 <span className="screenshot-option-desc">Click a window to capture with shadow</span>
@@ -178,7 +171,7 @@ export function Screenshot({ filter, onBack, onTrailingChange }: ScreenshotProps
           </button>
           <button className="screenshot-option-row" onClick={() => screenshotCaptureScreen()}>
             <div className="screenshot-option-info">
-              <Desktop size={16} weight="regular" className="screenshot-option-icon" />
+              <Icon icon={monitor} size="sm" className="screenshot-option-icon" />
               <div className="screenshot-option-text">
                 <span className="screenshot-option-label">Capture Screen</span>
                 <span className="screenshot-option-desc">Capture the full screen</span>
@@ -203,18 +196,22 @@ export function Screenshot({ filter, onBack, onTrailingChange }: ScreenshotProps
                     <img src={thumbCache[item.id]} alt="" />
                   )}
                   <div className="screenshot-thumb-overlay">
-                    <button
-                      className="screenshot-thumb-btn"
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      iconOnly
+                      icon={copy}
+                      aria-label="Copy"
                       onClick={(e) => handleCopy(e, item.id)}
-                    >
-                      <Copy size={14} weight="regular" />
-                    </button>
-                    <button
-                      className="screenshot-thumb-btn"
+                    />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      iconOnly
+                      icon={trash2}
+                      aria-label="Delete"
                       onClick={(e) => handleDelete(e, item.id)}
-                    >
-                      <Trash size={14} weight="regular" />
-                    </button>
+                    />
                   </div>
                   <div className="screenshot-thumb-meta">
                     {item.source_app ?? formatTime(item.timestamp)}

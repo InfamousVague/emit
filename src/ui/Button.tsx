@@ -1,26 +1,15 @@
-import "./Button.css";
+import { Button as BaseButton } from "@base/primitives/button/Button";
+import type { ButtonProps as BaseButtonProps } from "@base/primitives/button/Button";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-type ButtonSize = "sm" | "md";
+type EmitButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+interface ButtonProps extends Omit<BaseButtonProps, "variant" | "intent"> {
+  variant?: EmitButtonVariant;
 }
 
-export function Button({
-  variant = "secondary",
-  size = "md",
-  className = "",
-  children,
-  ...props
-}: ButtonProps) {
-  return (
-    <button
-      className={`emit-btn emit-btn--${variant} emit-btn--${size} ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
+export function Button({ variant = "secondary", ...rest }: ButtonProps) {
+  if (variant === "danger") {
+    return <BaseButton variant="secondary" intent="error" {...rest} />;
+  }
+  return <BaseButton variant={variant} {...rest} />;
 }

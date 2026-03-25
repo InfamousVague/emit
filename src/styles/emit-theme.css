@@ -1,0 +1,260 @@
+/* Emit Theme — Base tokens + Emit-specific overrides */
+@import "@base/site/styles/tokens.css";
+
+/* ── Base component CSS ─────────────────────────────────────────────── */
+@import "@base/primitives/button/button.css";
+@import "@base/primitives/input/input.css";
+@import "@base/primitives/toggle/toggle.css";
+@import "@base/primitives/select/select.css";
+@import "@base/primitives/badge/badge.css";
+@import "@base/primitives/text/text.css";
+@import "@base/primitives/kbd/kbd.css";
+@import "@base/primitives/icon/icon.css";
+@import "@base/primitives/list-item/list-item.css";
+@import "@base/primitives/tabs/tabs.css";
+@import "@base/primitives/popover/popover.css";
+@import "@base/primitives/spinner/spinner.css";
+@import "@base/primitives/skeleton/skeleton.css";
+@import "@base/primitives/sparkline/sparkline.css";
+@import "@base/primitives/animation/keyframes.css";
+@import "@base/primitives/animation/utilities.css";
+
+/* ── Force dark theme as default ────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+}
+
+/* ── Emit-specific spacing aliases ──────────────────────────────────── */
+/* Emit's px-based dense spacing is preserved for the desktop app context.
+   These intentionally map to px values, not Base's rem scale. */
+:root {
+  --space-3xs: 1px;
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 6px;
+  --space-md: 8px;
+  --space-lg: 10px;
+  --space-xl: 14px;
+  --space-2xl: 16px;
+  --space-3xl: 20px;
+  --space-4xl: 40px;
+}
+
+/* ── Emit-specific font-size aliases ────────────────────────────────── */
+:root {
+  --font-size-3xs: 7px;
+  --font-size-2xs: 8px;
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-base: 12px;
+  --font-size-md: 13px;
+  --font-size-lg: 16px;
+}
+
+/* ── Emit-specific font families ────────────────────────────────────── */
+:root {
+  --font-family-mono: "SF Mono", "Fira Code", "Menlo", monospace;
+}
+
+/* ── Emit-specific font weights ─────────────────────────────────────── */
+:root {
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+}
+
+/* ── Emit-specific radii ────────────────────────────────────────────── */
+:root {
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 13px;
+  --radius-round: 9999px;
+}
+
+/* ── Emit-specific transitions ──────────────────────────────────────── */
+:root {
+  --transition-fast: 0.08s ease;
+  --transition-normal: 0.1s ease;
+}
+
+/* ── Emit-specific background overrides ─────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  /* Translucent glass shell background */
+  --color-bg-primary: rgba(5, 5, 5, 0.82);
+
+  /* Interaction overlays */
+  --color-bg-hover: rgba(255, 255, 255, 0.03);
+  --color-bg-selected: rgba(255, 255, 255, 0.06);
+  --color-bg-kbd: rgba(255, 255, 255, 0.04);
+  --color-bg-icon: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+
+  /* Border aliases */
+  --color-border-kbd: rgba(255, 255, 255, 0.06);
+  --color-border-icon: rgba(255, 255, 255, 0.05);
+  --color-border-selected: rgba(255, 255, 255, 0.05);
+
+  /* Text aliases */
+  --color-text-muted: rgba(255, 255, 255, 0.28);
+  --color-text-icon: rgba(255, 255, 255, 0.35);
+  --color-text-kbd: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Brand gradient ─────────────────────────────────────────────────── */
+:root {
+  --color-brand-purple: #8B5CF6;
+  --color-brand-pink: #EC4899;
+  --color-brand-blue: #3B82F6;
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-brand-purple),
+    var(--color-brand-pink),
+    var(--color-brand-blue),
+    var(--color-brand-purple)
+  );
+}
+
+/* ── Semantic colors ────────────────────────────────────────────────── */
+:root {
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+}
+
+/* ── Performance thresholds ─────────────────────────────────────────── */
+:root {
+  --color-perf-good: #4ade80;
+  --color-perf-warn: #fbbf24;
+  --color-perf-bad: #ef4444;
+}
+
+/* ── Gradient border (Umbra glass style) ────────────────────────────── */
+:root {
+  --color-gradient-border: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(120, 120, 255, 0.07) 60%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+}
+
+/* ── Glassmorphism utility ──────────────────────────────────────────── */
+:root {
+  --blur-glass: blur(16px) saturate(180%);
+}
+
+/* ── ViewContainer ──────────────────────────────────────────────────── */
+.view-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.view-container__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.view-container__body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.view-container__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.view-container__body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ── ActionBar (composed from Base Popover styling) ─────────────────── */
+.action-bar-popover {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: var(--space-xs);
+  width: 240px;
+  background: rgba(20, 20, 20, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xs) 0;
+  z-index: 50;
+}
+
+.action-bar-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-bar-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.action-bar-item:hover,
+.action-bar-item.selected {
+  background: var(--color-bg-selected);
+}
+
+.action-bar-item.selected {
+  border-left: 2px solid var(--color-accent);
+}
+
+.action-bar-icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+}
+
+.action-bar-label {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.action-bar-shortcut {
+  display: flex;
+  gap: var(--space-2xs);
+}
+
+/* ── CommandIcon ─────────────────────────────────────────────────────── */
+.cmd-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-icon);
+  border: 1px solid var(--color-border-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.cmd-icon img {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+/* ── HighlightMatch gradient keyframe ───────────────────────────────── */
+@keyframes highlight-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

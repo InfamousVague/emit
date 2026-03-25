@@ -1,48 +1,43 @@
+import { Icon } from "@base/primitives/icon/Icon";
 import {
-  Moon,
-  LockSimple,
-  ArrowCounterClockwise,
-  Power,
-  SignOut,
-  Trash,
-  MagnifyingGlass,
-  Gear,
-  File,
-  AppWindow,
-  Command,
-  PuzzlePiece,
-  NotePencil,
-  Gauge,
-} from "@phosphor-icons/react";
-import type { IconProps } from "@phosphor-icons/react";
+  moon,
+  lock,
+  rotateCcw,
+  power,
+  logOut,
+  trash,
+  notebookPen,
+  gauge,
+  appWindow,
+  settings,
+  file,
+  search,
+  puzzle,
+  command,
+} from "../lib/icons";
 import { COMMAND_EXTENSION_ICONS } from "../assets/extension-icons";
-import "./CommandIcon.css";
 
-type PhosphorIcon = React.ComponentType<IconProps>;
-
-/** Map specific command IDs to Phosphor icons (fallback when no custom icon). */
-const ID_ICON_MAP: Record<string, PhosphorIcon> = {
-  "system.sleep": Moon,
-  "system.lock": LockSimple,
-  "system.restart": ArrowCounterClockwise,
-  "system.shutdown": Power,
-  "system.logout": SignOut,
-  "system.trash": Trash,
-  "notion.open": NotePencil,
-  "perf-monitor.open": Gauge,
+const ID_ICON_MAP: Record<string, string> = {
+  "system.sleep": moon,
+  "system.lock": lock,
+  "system.restart": rotateCcw,
+  "system.shutdown": power,
+  "system.logout": logOut,
+  "system.trash": trash,
+  "notion.open": notebookPen,
+  "perf-monitor.open": gauge,
 };
 
-/** Fallback icons by category. */
-const CATEGORY_ICON_MAP: Record<string, PhosphorIcon> = {
-  Applications: AppWindow,
-  System: Gear,
-  Files: File,
-  Search: MagnifyingGlass,
-  Extensions: PuzzlePiece,
-  Notion: NotePencil,
+const CATEGORY_ICON_MAP: Record<string, string> = {
+  Applications: appWindow,
+  System: settings,
+  Files: file,
+  Search: search,
+  Extensions: puzzle,
+  Notion: notebookPen,
 };
 
-const FALLBACK_ICON: PhosphorIcon = Command;
+const FALLBACK_ICON = command;
 
 interface CommandIconProps {
   id: string;
@@ -57,31 +52,28 @@ export function CommandIcon({
   iconDataUri,
   size = 20,
 }: CommandIconProps) {
-  // Real app icon from Rust extraction — render as image
   if (iconDataUri) {
     return (
-      <div className="emit-cmd-icon">
+      <div className="cmd-icon">
         <img src={iconDataUri} alt="" width={size} height={size} />
       </div>
     );
   }
 
-  // Custom extension icon — render as image
   const extensionIcon = COMMAND_EXTENSION_ICONS[id];
   if (extensionIcon) {
     return (
-      <div className="emit-cmd-icon">
+      <div className="cmd-icon">
         <img src={extensionIcon} alt="" width={size} height={size} />
       </div>
     );
   }
 
-  // Phosphor icon by ID, then category, then fallback
-  const Icon = ID_ICON_MAP[id] ?? CATEGORY_ICON_MAP[category] ?? FALLBACK_ICON;
+  const icon = ID_ICON_MAP[id] ?? CATEGORY_ICON_MAP[category] ?? FALLBACK_ICON;
 
   return (
-    <div className="emit-cmd-icon">
-      <Icon size={size} weight="regular" />
+    <div className="cmd-icon">
+      <Icon icon={icon} size="base" />
     </div>
   );
 }

@@ -1,14 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Copy,
-  Trash,
-  LockSimple,
-  LockSimpleOpen,
-  Eye,
-  EyeSlash,
-  Check,
-  TrashSimple,
-} from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { copy, trash2, lock, lockOpen, eye, eyeOff, check } from "../../lib/icons";
 import type { PasswordHistoryEntry } from "../../lib/types";
 import {
   pwgenHasVault,
@@ -221,7 +213,7 @@ export function PasswordGenerator({ filter, onBack, onTrailingChange }: Password
     return (
       <div className="password-manager">
         <div className="pm-setup">
-          <LockSimple size={32} weight="regular" style={{ opacity: 0.5 }} />
+          <Icon icon={lock} size="sm" />
           <div className="pm-setup-title">Create Your Vault</div>
           <div className="pm-setup-desc">
             Choose a master password to encrypt your password history. Make it strong — this is the only password you'll need to remember.
@@ -277,7 +269,7 @@ export function PasswordGenerator({ filter, onBack, onTrailingChange }: Password
         <div className="pm-detail" ref={listRef}>
           {!unlocked ? (
             <div className="pm-locked">
-              <LockSimple size={24} weight="regular" className="pm-locked-icon" />
+              <Icon icon={lock} size="sm" />
               <div className="pm-locked-text">Unlock to view history</div>
               <UnlockForm onUnlock={handleUnlock} error={error} shake={shake} />
             </div>
@@ -307,21 +299,21 @@ export function PasswordGenerator({ filter, onBack, onTrailingChange }: Password
                       onClick={(e) => { e.stopPropagation(); setRevealedId(revealedId === entry.id ? null : entry.id); }}
                       title={revealedId === entry.id ? "Hide" : "Reveal"}
                     >
-                      {revealedId === entry.id ? <EyeSlash size={14} /> : <Eye size={14} />}
+                      {revealedId === entry.id ? <Icon icon={eyeOff} size="sm" /> : <Icon icon={eye} size="sm" />}
                     </button>
                     <button
                       className={`pm-copy-btn ${copiedId === entry.id ? "copied" : ""}`}
                       onClick={(e) => { e.stopPropagation(); handleCopy(entry.id); }}
                       title="Copy"
                     >
-                      {copiedId === entry.id ? <Check size={14} /> : <Copy size={14} />}
+                      {copiedId === entry.id ? <Icon icon={check} size="sm" /> : <Icon icon={copy} size="sm" />}
                     </button>
                     <button
                       className="pm-copy-btn"
                       onClick={(e) => { e.stopPropagation(); handleDelete(entry.id); }}
                       title="Delete"
                     >
-                      <Trash size={14} />
+                      <Icon icon={trash2} size="sm" />
                     </button>
                   </div>
                 </div>
@@ -338,19 +330,19 @@ export function PasswordGenerator({ filter, onBack, onTrailingChange }: Password
           </span>
           <span className={`pm-footer-lock-status ${unlocked ? "unlocked" : "locked"}`}>
             {unlocked ? (
-              <><LockSimpleOpen size={10} /> Unlocked</>
+              <><Icon icon={lockOpen} size="sm" /> Unlocked</>
             ) : (
-              <><LockSimple size={10} /> Locked</>
+              <><Icon icon={lock} size="sm" /> Locked</>
             )}
           </span>
           {unlocked && (
             <>
               <Button variant="ghost" size="sm" onClick={handleLock}>
-                <LockSimple size={12} /> Lock
+                <Icon icon={lock} size="sm" /> Lock
               </Button>
               {history.length > 0 && (
                 <Button variant="ghost" size="sm" onClick={handleClearAll}>
-                  <TrashSimple size={12} /> Clear
+                  <Icon icon={trash2} size="sm" /> Clear
                 </Button>
               )}
             </>

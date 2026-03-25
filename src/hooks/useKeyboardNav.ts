@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { CommandEntry } from "../lib/types";
-import { hideWindow } from "../lib/tauri";
+import { hideWindow, quickLook, revealInFinder } from "../lib/tauri";
 
 interface UseKeyboardNavOptions {
   results: CommandEntry[];
@@ -32,7 +32,22 @@ export function useKeyboardNav({
           break;
         case "Enter":
           if (results[selectedIndex]) {
+            // Cmd+Shift+Enter → Reveal in Finder for file results
+            if (e.metaKey && e.shiftKey && results[selectedIndex].id.startsWith("file.")) {
+              e.preventDefault();
+              const path = results[selectedIndex].id.slice(5).split(":").join("/");
+              revealInFinder(path);
+              break;
+            }
             await onExecute(results[selectedIndex].id);
+          }
+          break;
+        case " ":
+          // Shift+Space → Quick Look for file results
+          if (e.shiftKey && results[selectedIndex]?.id.startsWith("file.")) {
+            e.preventDefault();
+            const path = results[selectedIndex].id.slice(5).split(":").join("/");
+            quickLook(path);
           }
           break;
         case "Escape":

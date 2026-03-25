@@ -33,6 +33,14 @@ export async function hideWindow(): Promise<void> {
   return invoke("hide_window");
 }
 
+export async function quickLook(path: string): Promise<void> {
+  return invoke("quick_look", { path });
+}
+
+export async function revealInFinder(path: string): Promise<void> {
+  return invoke("reveal_in_finder", { path });
+}
+
 /** Execute a command and dismiss the launcher window. */
 export async function executeAndDismiss(id: string): Promise<void> {
   await executeCommand(id);
@@ -396,6 +404,115 @@ export async function perfSaveAlerts(
 
 export async function perfResizeWindow(height: number): Promise<void> {
   return invoke("perf_resize_window", { height });
+}
+
+// --- Port Pilot ---
+
+export async function portListListeners(): Promise<
+  import("./types").PortListener[]
+> {
+  return invoke("port_list_listeners");
+}
+
+export async function portKillProcess(pid: number): Promise<string> {
+  return invoke("port_kill_process", { pid });
+}
+
+export async function portGetGroups(): Promise<
+  import("./types").PortGroup[]
+> {
+  return invoke("port_get_groups");
+}
+
+// --- Env Vault ---
+
+export async function envVaultGetConfig(): Promise<
+  import("./types").EnvVaultConfig
+> {
+  return invoke("env_vault_get_config");
+}
+
+export async function envVaultSaveConfig(
+  config: import("./types").EnvVaultConfig,
+): Promise<void> {
+  return invoke("env_vault_save_config", { config });
+}
+
+export async function envVaultScan(): Promise<import("./types").EnvFile[]> {
+  return invoke("env_vault_scan");
+}
+
+export async function envVaultReadFile(
+  filePath: string,
+): Promise<import("./types").EnvVariable[]> {
+  return invoke("env_vault_read_file", { filePath });
+}
+
+export async function envVaultUpdateVar(
+  filePath: string,
+  key: string,
+  value: string,
+): Promise<void> {
+  return invoke("env_vault_update_var", { filePath, key, value });
+}
+
+export async function envVaultOpenDir(dirPath: string): Promise<void> {
+  return invoke("env_vault_open_dir", { dirPath });
+}
+
+// --- Bitwarden ---
+
+export async function bwStatus(): Promise<string> {
+  return invoke("bw_status");
+}
+
+export async function bwUnlock(password: string): Promise<void> {
+  return invoke("bw_unlock", { password });
+}
+
+export async function bwLock(): Promise<void> {
+  return invoke("bw_lock");
+}
+
+export async function bwIsUnlocked(): Promise<boolean> {
+  return invoke("bw_is_unlocked");
+}
+
+export async function bwSearch(
+  query: string,
+): Promise<import("./types").VaultItem[]> {
+  return invoke("bw_search", { query });
+}
+
+export async function bwGetPassword(itemId: string): Promise<string> {
+  return invoke("bw_get_password", { itemId });
+}
+
+export async function bwGetUsername(itemId: string): Promise<string> {
+  return invoke("bw_get_username", { itemId });
+}
+
+export async function bwGetTotp(itemId: string): Promise<string> {
+  return invoke("bw_get_totp", { itemId });
+}
+
+export async function bwCopyToClipboard(value: string): Promise<void> {
+  return invoke("bw_copy_to_clipboard", { value });
+}
+
+export async function bwUnlockAndCopy(
+  password: string,
+  itemId: string,
+): Promise<string> {
+  return invoke("bw_unlock_and_copy", { password, itemId });
+}
+
+export async function bwGetLockTimeout(): Promise<number> {
+  return invoke("bw_get_lock_timeout");
+}
+
+export async function bwSetLockTimeout(seconds: number): Promise<void> {
+  return invoke("bw_set_lock_timeout", { seconds });
 }
 
 // --- Shortcuts ---

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, PuzzlePiece } from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { arrowLeft, puzzle } from "../../lib/icons";
 import type { ExtensionInfo } from "../../lib/types";
 import { getExtensions, setExtensionEnabled } from "../../lib/tauri";
-import { Toggle } from "../../ui";
+import { Button, Toggle } from "../../ui";
 import { EXTENSION_ICONS } from "../../assets/extension-icons";
 import "./Marketplace.css";
 
@@ -41,9 +42,7 @@ export function Marketplace({
   return (
     <div className="marketplace">
       <div className="marketplace-header">
-        <button className="view-back" onClick={onBack} aria-label="Back">
-          <ArrowLeft size={18} weight="regular" />
-        </button>
+        <Button variant="ghost" iconOnly icon={arrowLeft} aria-label="Back" onClick={onBack} />
         <h2 className="marketplace-title">Extensions</h2>
       </div>
 
@@ -60,7 +59,7 @@ export function Marketplace({
                 {iconSrc ? (
                   <img src={iconSrc} alt={ext.name} width={24} height={24} />
                 ) : (
-                  <PuzzlePiece size={20} weight="regular" />
+                  <Icon icon={puzzle} size="base" />
                 )}
               </div>
               <div className="ext-card-info">

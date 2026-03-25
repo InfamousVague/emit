@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { ShieldWarning } from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { shieldAlert } from "../../lib/icons";
 import { wmCheckAccessibility, wmRequestAccessibility } from "../../lib/tauri";
 
 interface Props {
@@ -22,7 +23,7 @@ export function AccessibilityPrompt({ onGranted }: Props) {
 
   return (
     <div className="wm-accessibility">
-      <ShieldWarning size={32} weight="duotone" />
+      <Icon icon={shieldAlert} size="2xl" />
       <p className="wm-accessibility-title">Accessibility Permission Required</p>
       <p className="wm-accessibility-desc">
         Window Management needs Accessibility access to move and resize windows.

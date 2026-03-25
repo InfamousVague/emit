@@ -8,13 +8,23 @@ export type SearchMode = "search" | "command";
 
 /** Lower number = higher priority in results list. */
 const CATEGORY_PRIORITY: Record<string, number> = {
-  Extensions: 0,
-  System: 1,
-  Settings: 2,
-  Applications: 3,
-  Notion: 4,
-  Files: 5,
+  Calculator: 0,
+  Bitwarden: 1,
+  "Developer Tools": 2,
+  Productivity: 3,
+  Design: 4,
+  Security: 5,
+  System: 6,
+  Settings: 6,
+  Applications: 7,
+  "Window Management": 8,
+  Notion: 9,
+  Files: 10,
+  "Web Search": 11,
 };
+
+/** Score threshold above which a result's score takes precedence over category ordering. */
+const HIGH_SCORE_THRESHOLD = 70;
 
 const BOOLEAN_SETTING_KEYS = new Set([
   "replace_spotlight",
@@ -69,7 +79,10 @@ const FILTER_PREFIXES: Record<string, string> = {
   "file:": "Files",
   "app:": "Applications",
   "system:": "System",
-  "ext:": "Extensions",
+  "dev:": "Developer Tools",
+  "design:": "Design",
+  "prod:": "Productivity",
+  "security:": "Security",
   "pw:": "PasswordGenerator",
   "settings:": "Settings",
 };
@@ -147,9 +160,15 @@ export function useSearch() {
             : [];
         const merged = [...filtered, ...settingsItems];
         merged.sort((a, b) => {
+          const aScore = a.score ?? 0;
+          const bScore = b.score ?? 0;
+          const aHigh = aScore >= HIGH_SCORE_THRESHOLD;
+          const bHigh = bScore >= HIGH_SCORE_THRESHOLD;
+          // When either result has a strong match score, sort by score first
+          if (aHigh || bHigh) return bScore - aScore;
           const catDiff = categoryRank(a.category) - categoryRank(b.category);
           if (catDiff !== 0) return catDiff;
-          return (b.score ?? 0) - (a.score ?? 0);
+          return bScore - aScore;
         });
         setResults(merged);
         setSelectedIndex(0);

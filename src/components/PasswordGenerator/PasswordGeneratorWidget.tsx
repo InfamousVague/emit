@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowsClockwise, Copy, Check } from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { refreshCw, copy, check } from "../../lib/icons";
 import type { GeneratePasswordOpts } from "../../lib/types";
 import { pwgenGenerate, pwgenSaveToHistory } from "../../lib/tauri";
 
@@ -87,14 +88,14 @@ export function PasswordGeneratorWidget({ onGenerated }: PasswordGeneratorWidget
       <div className="pm-field">
         <div className="pm-field-label">Generated Password</div>
         <div className="pm-field-value">
-          <code style={{ fontFamily: "'SF Mono', monospace", fontSize: "13px", wordBreak: "break-all", whiteSpace: "pre-wrap" }}>
+          <code style={{ fontFamily: "var(--font-family-mono)", fontSize: "13px", wordBreak: "break-all", whiteSpace: "pre-wrap" }}>
             {password}
           </code>
           <button className={`pm-copy-btn ${copied ? "copied" : ""}`} onClick={handleCopy} title="Copy">
-            {copied ? <Check size={14} /> : <Copy size={14} />}
+            {copied ? <Icon icon={check} size="sm" /> : <Icon icon={copy} size="sm" />}
           </button>
           <button className="pm-copy-btn" onClick={generate} title="Regenerate">
-            <ArrowsClockwise size={14} weight="regular" />
+            <Icon icon={refreshCw} size="sm" />
           </button>
         </div>
         <div className="pm-strength">

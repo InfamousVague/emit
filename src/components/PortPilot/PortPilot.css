@@ -1,0 +1,159 @@
+.port-pilot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+/* ── Loading ────────────────────────────────────────────────────────────── */
+
+.port-pilot__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  justify-content: center;
+  padding: var(--space-xl) 0;
+}
+
+/* ── Summary bar ────────────────────────────────────────────────────────── */
+
+.port-pilot__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.port-pilot__stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.port-pilot__categories {
+  display: flex;
+  gap: var(--space-2xs);
+  flex-wrap: wrap;
+}
+
+.port-pilot__sort {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.port-pilot__sort-btn--active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Toast ──────────────────────────────────────────────────────────────── */
+
+.port-pilot__toast {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  animation: port-toast-in 0.2s ease;
+}
+
+.port-pilot__toast--success {
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+.port-pilot__toast--error {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+@keyframes port-toast-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Row ────────────────────────────────────────────────────────────────── */
+
+.port-pilot__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.port-pilot__row {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto;
+  gap: var(--space-sm);
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.port-pilot__row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Port column ────────────────────────────────────────────────────────── */
+
+.port-pilot__port {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+}
+
+/* ── Info column ────────────────────────────────────────────────────────── */
+
+.port-pilot__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.port-pilot__process {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.port-pilot__command {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.7;
+}
+
+/* ── Meta column ────────────────────────────────────────────────────────── */
+
+.port-pilot__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3xs);
+  white-space: nowrap;
+}
+
+/* ── Actions column ─────────────────────────────────────────────────────── */
+
+.port-pilot__actions {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Empty ──────────────────────────────────────────────────────────────── */
+
+.port-pilot__empty {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-xl) 0;
+}

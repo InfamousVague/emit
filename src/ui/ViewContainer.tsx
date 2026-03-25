@@ -1,5 +1,3 @@
-import "./ViewContainer.css";
-
 interface ViewContainerProps {
   children: React.ReactNode;
   className?: string;
@@ -7,7 +5,7 @@ interface ViewContainerProps {
 
 export function ViewContainer({ children, className = "" }: ViewContainerProps) {
   return (
-    <div className={`emit-view ${className}`}>
+    <div className={`view-container ${className}`}>
       {children}
     </div>
   );
@@ -20,7 +18,7 @@ interface ViewBodyProps {
 
 function ViewBody({ children, className = "" }: ViewBodyProps) {
   return (
-    <div className={`emit-view__body ${className}`}>
+    <div className={`view-container__body ${className}`}>
       {children}
     </div>
   );

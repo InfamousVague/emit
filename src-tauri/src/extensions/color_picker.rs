@@ -22,7 +22,7 @@ impl CommandProvider for ColorPickerProvider {
             id: "color_picker.open".into(),
             name: "Color Picker".into(),
             description: "Pick colors from your screen and save palettes".into(),
-            category: "Extensions".into(),
+            category: "Design".into(),
             icon: None,
             match_indices: vec![],
             score: 0,

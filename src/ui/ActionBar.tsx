@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Kbd } from "./Kbd";
-import "./ActionBar.css";
 
 export interface Action {
   id: string;
@@ -24,7 +23,6 @@ export function ActionBar({ actions, open, onClose }: ActionBarProps) {
     setSelectedIndex(0);
   }, [open]);
 
-  // Close on click outside
   useEffect(() => {
     if (!open) return;
 
@@ -37,7 +35,6 @@ export function ActionBar({ actions, open, onClose }: ActionBarProps) {
       }
     };
 
-    // Defer so the opening click doesn't immediately close
     requestAnimationFrame(() => {
       document.addEventListener("mousedown", handler);
     });

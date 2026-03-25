@@ -9,8 +9,8 @@ use super::perf_monitor::{MetricSnapshot, ProcessInfo};
 
 pub type SharedMetricsStore = Arc<RwLock<MetricsStore>>;
 
-/// Maximum entries: 24 hours at 2 samples/sec = 172,800
-const MAX_BUFFER_SIZE: usize = 172_800;
+/// Maximum entries: 1 hour at 2 samples/sec = 7,200
+const MAX_BUFFER_SIZE: usize = 7_200;
 
 #[derive(Debug, Default)]
 pub struct MetricsStore {

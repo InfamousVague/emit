@@ -42,7 +42,7 @@ impl CommandProvider for ScreenshotProvider {
             id: "screenshot.open".into(),
             name: "Screenshot".into(),
             description: "Capture windows and manage screenshots".into(),
-            category: "Extensions".into(),
+            category: "Productivity".into(),
             icon: None,
             match_indices: vec![],
             score: 0,

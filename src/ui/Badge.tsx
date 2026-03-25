@@ -1,7 +1,14 @@
 import { memo } from "react";
-import "./Badge.css";
+import { Badge as BaseBadge } from "@base/primitives/badge/Badge";
 
 type BadgeVariant = "default" | "success" | "warning" | "error";
+
+const COLOR_MAP = {
+  default: "neutral",
+  success: "success",
+  warning: "warning",
+  error: "error",
+} as const;
 
 interface BadgeProps {
   variant?: BadgeVariant;
@@ -15,8 +22,8 @@ export const Badge = memo(function Badge({
   children,
 }: BadgeProps) {
   return (
-    <span className={`emit-badge emit-badge--${variant} ${className}`}>
+    <BaseBadge color={COLOR_MAP[variant]} className={className}>
       {children}
-    </span>
+    </BaseBadge>
   );
 });

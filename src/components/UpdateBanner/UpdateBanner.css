@@ -1,4 +1,5 @@
 .update-banner {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -9,6 +10,11 @@
   min-height: 36px;
 }
 
+.update-banner--ready {
+  background: rgba(80, 200, 120, 0.06);
+  border-bottom-color: rgba(80, 200, 120, 0.15);
+}
+
 .update-banner-content {
   display: flex;
   align-items: center;
@@ -17,6 +23,10 @@
 
 .update-banner-icon {
   color: rgba(160, 160, 255, 0.7);
+}
+
+.update-banner-icon--ready {
+  color: rgba(80, 200, 120, 0.8);
 }
 
 .update-banner-text {
@@ -35,7 +45,18 @@
   gap: var(--space-md);
 }
 
+.update-banner-pct {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+  text-align: right;
+}
+
 .update-banner-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   padding: 4px 12px;
   background: rgba(120, 120, 255, 0.12);
   border: 1px solid rgba(120, 120, 255, 0.2);
@@ -51,9 +72,14 @@
   background: rgba(120, 120, 255, 0.2);
 }
 
-.update-banner-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
+.update-banner-btn--relaunch {
+  background: rgba(80, 200, 120, 0.12);
+  border-color: rgba(80, 200, 120, 0.25);
+  color: rgba(120, 220, 150, 0.9);
+}
+
+.update-banner-btn--relaunch:hover {
+  background: rgba(80, 200, 120, 0.2);
 }
 
 .update-banner-dismiss {
@@ -71,4 +97,21 @@
 
 .update-banner-dismiss:hover {
   color: var(--color-text-primary);
+}
+
+/* Progress bar — pinned to bottom of banner */
+.update-banner-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(120, 120, 255, 0.1);
+}
+
+.update-banner-progress-bar {
+  height: 100%;
+  background: rgba(140, 140, 255, 0.6);
+  transition: width 0.3s ease;
+  border-radius: 0 1px 1px 0;
 }

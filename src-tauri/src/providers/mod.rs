@@ -1,7 +1,9 @@
 pub mod applications;
 pub mod builtin;
+pub mod calculator;
 pub mod clipboard;
 pub mod files;
+pub mod web_search;
 
 use crate::command_schema::{CommandDefinition, CommandResult, SelectOption};
 use crate::launcher::CommandEntry;

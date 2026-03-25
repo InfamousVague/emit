@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Eyedropper,
-  Trash,
-  Copy,
-  FloppyDisk,
-  Plus,
-} from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { pipette, trash2, copy, save, plus } from "../../lib/icons";
 import type { ColorPalette, PickedColor } from "../../lib/types";
 import {
   colorPickerLoadPalettes,
@@ -185,7 +180,7 @@ export function ColorPicker({
       // Unsaved: show save button
       onTrailingChange?.(
         <Button size="sm" onClick={handleSavePalette}>
-          <FloppyDisk size={14} weight="bold" />
+          <Icon icon={save} size="sm" />
           Save
         </Button>,
       );
@@ -197,7 +192,7 @@ export function ColorPicker({
           size="sm"
           onClick={() => handleDeletePalette(selectedPaletteIndex)}
         >
-          <Trash size={14} weight="regular" />
+          <Icon icon={trash2} size="sm" />
         </Button>,
       );
     } else {
@@ -281,7 +276,7 @@ export function ColorPicker({
         <div className="cp-list" ref={listRef}>
           <div className="cp-list-header">
             <Button onClick={handleLaunchPicker} style={{ width: "100%" }}>
-              <Eyedropper size={14} weight="bold" />
+              <Icon icon={pipette} size="sm" />
               Pick Colors
             </Button>
           </div>
@@ -293,7 +288,7 @@ export function ColorPicker({
               onClick={() => setSelectedPaletteIndex(-1)}
             >
               <div className="cp-palette-name">
-                <Plus size={12} weight="bold" />
+                <Icon icon={plus} size="sm" />
                 Unsaved Picks
               </div>
               <div className="cp-palette-dots">
@@ -374,7 +369,7 @@ export function ColorPicker({
                           className="cp-color-hex"
                           onClick={() => handleCopyHex(color.hex)}
                         >
-                          <Copy size={10} weight="regular" />
+                          <Icon icon={copy} size="sm" />
                           {color.hex.toUpperCase()}
                         </button>
                         <span className="cp-color-secondary">
@@ -389,7 +384,7 @@ export function ColorPicker({
                           className="cp-color-remove"
                           onClick={() => handleRemoveUnsavedColor(i)}
                         >
-                          <Trash size={12} weight="regular" />
+                          <Icon icon={trash2} size="sm" />
                         </button>
                       )}
                     </div>

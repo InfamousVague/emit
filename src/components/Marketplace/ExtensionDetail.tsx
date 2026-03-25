@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { arrowLeft } from "../../lib/icons";
 import {
   getExtensions,
   getExtensionSettings,
@@ -45,7 +46,7 @@ export function ExtensionDetail({ extensionId, onBack }: ExtensionDetailProps) {
     <div className="ext-detail">
       <div className="ext-detail-header">
         <button className="view-back" onClick={onBack} aria-label="Back">
-          <ArrowLeft size={18} weight="regular" />
+          <Icon icon={arrowLeft} size="sm" />
         </button>
         <h2 className="ext-detail-title">{ext.name}</h2>
       </div>

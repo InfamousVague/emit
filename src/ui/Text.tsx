@@ -1,9 +1,36 @@
 import { memo } from "react";
-import "./Text.css";
+import { Text as BaseText } from "@base/primitives/text/Text";
+import type { CSSProperties } from "react";
 
 type TextSize = "3xs" | "2xs" | "xs" | "sm" | "base" | "md" | "lg";
 type TextWeight = "normal" | "medium" | "semibold";
 type TextColor = "primary" | "secondary" | "tertiary" | "muted" | "error" | "success" | "warning";
+
+const SIZE_MAP = {
+  "3xs": "xs",
+  "2xs": "xs",
+  xs: "xs",
+  sm: "sm",
+  base: "base",
+  md: "base",
+  lg: "lg",
+} as const;
+
+const WEIGHT_MAP = {
+  normal: "regular",
+  medium: "medium",
+  semibold: "semibold",
+} as const;
+
+const COLOR_MAP = {
+  primary: "primary",
+  secondary: "secondary",
+  tertiary: "tertiary",
+  muted: "tertiary",
+  error: "error",
+  success: "success",
+  warning: "warning",
+} as const;
 
 interface TextProps {
   size?: TextSize;
@@ -14,7 +41,7 @@ interface TextProps {
   tabular?: boolean;
   className?: string;
   children: React.ReactNode;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 export const Text = memo(function Text({
@@ -28,21 +55,22 @@ export const Text = memo(function Text({
   children,
   style,
 }: TextProps) {
-  const classes = [
-    "emit-text",
-    `emit-text--${size}`,
-    `emit-text--w-${weight}`,
-    `emit-text--c-${color}`,
-    uppercase && "emit-text--uppercase",
-    tabular && "emit-text--tabular",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const extraStyle: CSSProperties = {
+    ...style,
+    ...(uppercase ? { textTransform: "uppercase" as const, letterSpacing: "0.05em" } : {}),
+    ...(tabular ? { fontVariantNumeric: "tabular-nums" } : {}),
+  };
 
   return (
-    <Tag className={classes} style={style}>
+    <BaseText
+      as={Tag}
+      size={SIZE_MAP[size]}
+      weight={WEIGHT_MAP[weight]}
+      color={COLOR_MAP[color]}
+      className={className}
+      style={Object.keys(extraStyle).length > 0 ? extraStyle : undefined}
+    >
       {children}
-    </Tag>
+    </BaseText>
   );
 });

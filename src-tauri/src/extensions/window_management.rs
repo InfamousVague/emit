@@ -558,7 +558,7 @@ impl CommandProvider for WindowManagementProvider {
             id: "wm.open".into(),
             name: "Window Manager".into(),
             description: "Manage window positions and layouts".into(),
-            category: "Extensions".into(),
+            category: "Productivity".into(),
             icon: None,
             match_indices: vec![],
             score: 0,

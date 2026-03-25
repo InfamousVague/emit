@@ -179,7 +179,7 @@
 
 .clip-preview-content pre {
   margin: 0;
-  font-family: "SF Mono", "Menlo", "Monaco", monospace;
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
   white-space: pre-wrap;

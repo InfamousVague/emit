@@ -25,7 +25,7 @@ impl CommandProvider for RulerProvider {
             id: "ruler.open".into(),
             name: "Pixel Ruler".into(),
             description: "Measure distances on screen with a pixel ruler overlay".into(),
-            category: "Extensions".into(),
+            category: "Design".into(),
             icon: None,
             match_indices: vec![],
             score: 0,

@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Copy,
-  Trash,
-  Link,
-  TextT,
-  ArrowSquareOut,
-  ImageSquare,
-} from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { copy, trash2, link, typeIcon, externalLink, image } from "../../lib/icons";
 import type { ClipboardItem } from "../../lib/types";
 import {
   getClipboardHistory,
@@ -180,14 +174,14 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
       {
         id: "copy",
         label: selected.content_type === "image" ? "Copy Image" : "Copy to Clipboard",
-        icon: <Copy size={14} weight="regular" />,
+        icon: <Icon icon={copy} size="sm" />,
         shortcut: ["↵"],
         action: () => handleCopy(selected),
       },
       {
         id: "paste",
         label: "Paste to App",
-        icon: <ArrowSquareOut size={14} weight="regular" />,
+        icon: <Icon icon={externalLink} size="sm" />,
         shortcut: ["⇧", "↵"],
         action: () => handlePasteToFrontApp(selected),
       },
@@ -197,7 +191,7 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
       list.push({
         id: "open",
         label: "Open URL",
-        icon: <Link size={14} weight="regular" />,
+        icon: <Icon icon={link} size="sm" />,
         shortcut: ["⌘", "O"],
         action: () => handleOpenUrl(selected),
       });
@@ -206,7 +200,7 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
     list.push({
       id: "delete",
       label: "Delete Entry",
-      icon: <Trash size={14} weight="regular" />,
+      icon: <Icon icon={trash2} size="sm" />,
       shortcut: ["⌘", "⌫"],
       action: () => handleDelete(selected),
     });
@@ -276,10 +270,10 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
       if (thumb) {
         return <img src={thumb} alt="" className="clip-item-thumb" />;
       }
-      return <ImageSquare size={14} weight="regular" />;
+      return <Icon icon={image} size="sm" />;
     }
     if (item.content_type === "url") {
-      return <Link size={14} weight="regular" />;
+      return <Icon icon={link} size="sm" />;
     }
     if (detectColor(item.content)) {
       return (
@@ -289,7 +283,7 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
         />
       );
     }
-    return <TextT size={14} weight="regular" />;
+    return <Icon icon={typeIcon} size="sm" />;
   };
 
   const renderPreviewType = () => {
@@ -297,7 +291,7 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
     if (selected.content_type === "image") {
       return (
         <>
-          <ImageSquare size={12} weight="regular" />
+          <Icon icon={image} size="sm" />
           Image
         </>
       );
@@ -305,7 +299,7 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
     if (selected.content_type === "url") {
       return (
         <>
-          <Link size={12} weight="regular" />
+          <Icon icon={link} size="sm" />
           URL
         </>
       );
@@ -323,7 +317,7 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
     }
     return (
       <>
-        <TextT size={12} weight="regular" />
+        <Icon icon={typeIcon} size="sm" />
         Text
       </>
     );
@@ -379,14 +373,14 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
                     size="sm"
                     onClick={() => handleCopy(selected)}
                   >
-                    <Copy size={12} weight="regular" /> Copy
+                    <Icon icon={copy} size="sm" /> Copy
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDelete(selected)}
                   >
-                    <Trash size={12} weight="regular" />
+                    <Icon icon={trash2} size="sm" />
                   </Button>
                 </div>
               </div>
@@ -446,7 +440,7 @@ export function ClipboardManager({ filter, onBack, onTrailingChange }: Clipboard
             {filtered.length} item{filtered.length !== 1 ? "s" : ""}
           </span>
           <Button variant="ghost" size="sm" onClick={handleClear}>
-            <Trash size={12} weight="regular" /> Clear All
+            <Icon icon={trash2} size="sm" /> Clear All
           </Button>
         </div>
         <div className="clip-footer-actions">

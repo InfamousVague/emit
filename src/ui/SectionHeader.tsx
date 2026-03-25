@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Text } from "./Text";
+import { Text } from "@base/primitives/text/Text";
 
 interface SectionHeaderProps {
   children: React.ReactNode;
@@ -13,8 +13,8 @@ export const SectionHeader = memo(function SectionHeader({ children, className }
       size="xs"
       weight="semibold"
       color="secondary"
-      uppercase
       className={className}
+      style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
     >
       {children}
     </Text>

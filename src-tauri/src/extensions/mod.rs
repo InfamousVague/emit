@@ -1,10 +1,13 @@
+pub mod bitwarden;
 pub mod color_picker;
+pub mod env_vault;
 pub mod crypto;
 pub mod ioreg;
 pub mod manifest;
 pub mod notion;
 pub mod password_generator;
 pub mod perf_battery;
+pub mod port_pilot;
 pub mod perf_gpu;
 pub mod perf_monitor;
 pub mod perf_store;

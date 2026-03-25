@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { ArrowLeft, MagnifyingGlass } from "@phosphor-icons/react";
+import { Icon } from "@base/primitives/icon/Icon";
+import { arrowLeft, search } from "../../lib/icons";
 import { Kbd } from "../../ui";
 import type { LabelRange } from "../../hooks/useCommandParser";
 import "./SearchInput.css";
@@ -64,10 +65,10 @@ export function SearchInput({ value, onChange, placeholder, onBack, trailing, on
     <div className="search-bar">
       {onBack ? (
         <button className="search-back" onClick={onBack} aria-label="Back">
-          <ArrowLeft size={18} weight="regular" />
+          <Icon icon={arrowLeft} size="sm" />
         </button>
       ) : (
-        <MagnifyingGlass size={18} className="search-icon" weight="regular" />
+        <Icon icon={search} size="sm" />
       )}
       <div className="search-input-wrapper">
         <input

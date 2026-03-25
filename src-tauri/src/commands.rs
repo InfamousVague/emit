@@ -193,6 +193,26 @@ pub async fn clipboard_clear(
     Ok(())
 }
 
+// --- File utilities ---
+
+#[tauri::command]
+pub fn quick_look(path: String) -> Result<(), String> {
+    std::process::Command::new("qlmanage")
+        .args(["-p", &path])
+        .spawn()
+        .map(|_| ())
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn reveal_in_finder(path: String) -> Result<(), String> {
+    std::process::Command::new("open")
+        .args(["-R", &path])
+        .spawn()
+        .map(|_| ())
+        .map_err(|e| e.to_string())
+}
+
 // --- Extension commands ---
 
 #[derive(Debug, Clone, Serialize)]

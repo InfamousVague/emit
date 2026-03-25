@@ -1,5 +1,4 @@
 import { memo, useEffect, useRef } from "react";
-import "./ListItem.css";
 
 interface ListItemProps {
   icon?: React.ReactNode;
@@ -28,20 +27,28 @@ export const ListItem = memo(function ListItem({
     }
   }, [selected]);
 
+  const classes = [
+    "list-item",
+    selected ? "list-item--active" : "",
+    className,
+  ].filter(Boolean).join(" ");
+
   return (
     <div
       ref={ref}
-      className={`emit-list-item ${selected ? "emit-list-item--selected" : ""} ${className}`}
+      className={classes}
       onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
     >
-      {icon && <div className="emit-list-item__icon">{icon}</div>}
-      <div className="emit-list-item__content">
-        <div className="emit-list-item__title">{title}</div>
+      {icon && <span className="list-item__icon">{icon}</span>}
+      <span className="list-item__content">
+        <span className="list-item__label">{title}</span>
         {description && (
-          <div className="emit-list-item__desc">{description}</div>
+          <span className="list-item__description">{description}</span>
         )}
-      </div>
-      {trailing && <div className="emit-list-item__trailing">{trailing}</div>}
+      </span>
+      {trailing && <span className="list-item__trailing">{trailing}</span>}
     </div>
   );
 });

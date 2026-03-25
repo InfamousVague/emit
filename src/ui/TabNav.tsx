@@ -1,4 +1,5 @@
-import "./TabNav.css";
+import { Tabs } from "@base/primitives/tabs/Tabs";
+import type { Tab as BaseTab } from "@base/primitives/tabs/Tabs";
 
 export interface Tab {
   id: string;
@@ -12,17 +13,6 @@ interface Props {
 }
 
 export function TabNav({ tabs, activeId, onChange }: Props) {
-  return (
-    <div className="emit-tab-nav">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          className={`emit-tab-nav-item ${activeId === tab.id ? "active" : ""}`}
-          onClick={() => onChange(tab.id)}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
-  );
+  const baseTabs: BaseTab[] = tabs.map((t) => ({ value: t.id, label: t.label }));
+  return <Tabs tabs={baseTabs} value={activeId} onChange={onChange} size="sm" />;
 }

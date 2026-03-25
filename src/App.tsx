@@ -17,6 +17,10 @@ import {
   rulerOpen,
   saveSettings,
   wmSnapFocused,
+  bwUnlockAndCopy,
+  bwIsUnlocked,
+  bwGetPassword,
+  bwCopyToClipboard,
 } from "./lib/tauri";
 import { exit } from "@tauri-apps/plugin-process";
 import { listen } from "@tauri-apps/api/event";
@@ -41,7 +45,10 @@ type View =
   | "password-generator"
   | "window-manager"
   | "screenshot"
-  | "perf";
+  | "perf"
+  | "port-pilot"
+  | "env-vault"
+  | "bitwarden";
 
 const BOOLEAN_SETTINGS = new Set([
   "replace_spotlight",
@@ -86,6 +93,11 @@ export function App() {
   const [isCommandExecuting, setIsCommandExecuting] = useState(false);
   const [perfScrollTo, setPerfScrollTo] = useState<string | undefined>();
   const [wizardInitialValues, setWizardInitialValues] = useState<Record<string, unknown>>({});
+  const [copyToast, setCopyToast] = useState<string | null>(null);
+  const [bwUnlockPrompt, setBwUnlockPrompt] = useState<string | null>(null); // item_id to copy after unlock
+  const [bwPassword, setBwPassword] = useState("");
+  const [bwUnlocking, setBwUnlocking] = useState(false);
+  const [bwUnlockError, setBwUnlockError] = useState("");
 
   // Global Cmd+Q to quit
   useEffect(() => {
@@ -145,6 +157,9 @@ export function App() {
             "view:settings": "settings",
             "view:window-manager": "window-manager",
             "view:screenshot": "screenshot",
+            "view:port-pilot": "port-pilot",
+            "view:env-vault": "env-vault",
+            "view:bitwarden": "bitwarden",
           };
           const target = viewMap[result];
           if (target) setView(target);
@@ -155,12 +170,61 @@ export function App() {
         const snapPos = SNAP_POSITIONS[result.replace("action:wm.snap.", "")];
         if (snapPos) await wmSnapFocused(snapPos);
         await hideWindow();
+      } else if (result.startsWith("action:bw_copy:")) {
+        const itemId = result.replace("action:bw_copy:", "");
+        try {
+          const unlocked = await bwIsUnlocked();
+          if (unlocked) {
+            const pw = await bwGetPassword(itemId);
+            await bwCopyToClipboard(pw);
+            setCopyToast("Password copied to clipboard");
+            setTimeout(async () => {
+              setCopyToast(null);
+              await hideWindow();
+            }, 800);
+          } else {
+            setBwUnlockPrompt(itemId);
+            setBwPassword("");
+            setBwUnlockError("");
+          }
+        } catch {
+          // Vault locked — show unlock prompt
+          setBwUnlockPrompt(itemId);
+          setBwPassword("");
+          setBwUnlockError("");
+        }
+      } else if (result.toLowerCase().includes("copied")) {
+        setCopyToast(result);
+        setTimeout(async () => {
+          setCopyToast(null);
+          await hideWindow();
+        }, 800);
       } else {
         await hideWindow();
       }
     },
     [setView, setQuery, refreshSettings],
   );
+
+  const handleBwUnlock = useCallback(async () => {
+    if (!bwPassword.trim() || !bwUnlockPrompt) return;
+    setBwUnlocking(true);
+    setBwUnlockError("");
+    try {
+      const result = await bwUnlockAndCopy(bwPassword, bwUnlockPrompt);
+      setBwUnlockPrompt(null);
+      setBwPassword("");
+      setCopyToast(result);
+      setTimeout(async () => {
+        setCopyToast(null);
+        await hideWindow();
+      }, 800);
+    } catch (e) {
+      setBwUnlockError(String(e));
+    } finally {
+      setBwUnlocking(false);
+    }
+  }, [bwPassword, bwUnlockPrompt]);
 
   const handleCommandComplete = useCallback(
     async (_result: CommandResult) => {
@@ -238,13 +302,16 @@ export function App() {
       view === "password-generator" ||
       view === "window-manager" ||
       view === "screenshot" ||
+      view === "port-pilot" ||
+      view === "env-vault" ||
+      view === "bitwarden" ||
       view === "settings" ||
       view === "param-wizard" ||
       view === "perf" ||
       mode === "command",
   });
 
-  const { update, installUpdate, dismissUpdate, checkNow } = useAutoUpdate();
+  const { update, cancelDownload, relaunchApp, dismissUpdate, checkNow } = useAutoUpdate();
   const { history: perfHistory } = usePerfMonitor();
 
   const groups = useMemo(() => groupByCategory(results), [results]);
@@ -308,6 +375,9 @@ export function App() {
     : view === "window-manager" ? "Search windows\u2026"
     : view === "screenshot" ? "Filter screenshots\u2026"
     : view === "settings" ? "Search settings\u2026"
+    : view === "port-pilot" ? "Filter ports\u2026"
+    : view === "env-vault" ? "Filter projects & variables\u2026"
+    : view === "bitwarden" ? "Filter vault items\u2026"
     : view === "perf" ? "Search metrics\u2026"
     : mode === "command" ? "Type a command..."
     : "Search for apps and commands...";
@@ -331,11 +401,13 @@ export function App() {
           />
         ) : (
           <>
-            {update.available && !update.dismissed && (
+            {update.phase !== "idle" && !update.dismissed && (
               <UpdateBanner
                 version={update.version!}
-                downloading={update.downloading}
-                onUpdate={installUpdate}
+                phase={update.phase}
+                progress={update.progress}
+                onCancel={cancelDownload}
+                onRelaunch={relaunchApp}
                 onDismiss={dismissUpdate}
               />
             )}
@@ -349,7 +421,7 @@ export function App() {
               placeholder={placeholder}
               readOnly={view === "param-wizard"}
               onBack={
-                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager" || view === "screenshot" || view === "settings" || view === "perf"
+                view === "clipboard" || view === "notion" || view === "color-picker" || view === "password-generator" || view === "window-manager" || view === "screenshot" || view === "port-pilot" || view === "env-vault" || view === "bitwarden" || view === "settings" || view === "perf"
                   ? handleBack
                   : view === "param-wizard"
                     ? handleWizardBack
@@ -398,6 +470,54 @@ export function App() {
               perfHistory={perfHistory}
               perfScrollTo={perfScrollTo}
             />
+            {copyToast && (
+              <div className="copy-toast">
+                <span className="copy-toast__icon">✓</span>
+                <span className="copy-toast__text">{copyToast}</span>
+              </div>
+            )}
+            {bwUnlockPrompt && (
+              <div className="bw-unlock-overlay">
+                <form
+                  className="bw-unlock-prompt"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleBwUnlock();
+                  }}
+                >
+                  <span className="bw-unlock-prompt__icon">🔒</span>
+                  <input
+                    className="bw-unlock-prompt__input"
+                    type="password"
+                    placeholder="Master password"
+                    value={bwPassword}
+                    onChange={(e) => setBwPassword(e.target.value)}
+                    autoFocus
+                  />
+                  <button
+                    className="bw-unlock-prompt__btn"
+                    type="submit"
+                    disabled={bwUnlocking || !bwPassword.trim()}
+                  >
+                    {bwUnlocking ? "…" : "Unlock"}
+                  </button>
+                  <button
+                    className="bw-unlock-prompt__cancel"
+                    type="button"
+                    onClick={() => {
+                      setBwUnlockPrompt(null);
+                      setBwPassword("");
+                      setBwUnlockError("");
+                    }}
+                  >
+                    ✕
+                  </button>
+                </form>
+                {bwUnlockError && (
+                  <div className="bw-unlock-prompt__error">{bwUnlockError}</div>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

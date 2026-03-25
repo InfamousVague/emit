@@ -1,5 +1,6 @@
-import { Gear, PuzzlePiece, Power } from "@phosphor-icons/react";
 import { exit } from "@tauri-apps/plugin-process";
+import { Icon } from "@base/primitives/icon/Icon";
+import { settings, puzzle, power } from "../../lib/icons";
 import { Button, Kbd } from "../../ui";
 import emitIcon from "../../assets/emit-icon.png";
 import "./Footer.css";
@@ -17,16 +18,16 @@ export function Footer({ onSettingsClick, onMarketplaceClick }: FooterProps) {
         <span className="footer-label">Emit</span>
         {onSettingsClick && (
           <Button variant="ghost" size="sm" onClick={onSettingsClick}>
-            <Gear size={12} weight="regular" /> Settings
+            <Icon icon={settings} size="sm" /> Settings
           </Button>
         )}
         {onMarketplaceClick && (
           <Button variant="ghost" size="sm" onClick={onMarketplaceClick}>
-            <PuzzlePiece size={12} weight="regular" /> Extensions
+            <Icon icon={puzzle} size="sm" /> Extensions
           </Button>
         )}
         <Button variant="ghost" size="sm" onClick={() => exit(0)}>
-          <Power size={12} weight="regular" /> Quit
+          <Icon icon={power} size="sm" /> Quit
         </Button>
       </div>
       <div className="footer-actions">

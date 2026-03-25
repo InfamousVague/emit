@@ -126,7 +126,7 @@ impl CommandProvider for PasswordGeneratorProvider {
             id: "pwgen.open".into(),
             name: "Password Generator".into(),
             description: "Generate secure passwords with encrypted history".into(),
-            category: "Extensions".into(),
+            category: "Security".into(),
             icon: None,
             match_indices: vec![],
             score: 0,

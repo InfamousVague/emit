@@ -96,11 +96,14 @@ impl CommandRegistry {
             if provider.is_dynamic() {
                 let dynamic = provider.search(query).await;
                 for mut cmd in dynamic {
-                    let (score, indices) =
+                    let (fuzzy_score, indices) =
                         matcher.fuzzy_indices(&cmd.name, query).unwrap_or((50, vec![]));
                     cmd.match_indices = indices;
-                    cmd.score = score;
-                    scored.push((score, cmd));
+                    // If provider already set a high score (e.g. calculator/converter),
+                    // preserve it instead of overwriting with fuzzy score
+                    let final_score = if cmd.score >= 100 { cmd.score } else { fuzzy_score };
+                    cmd.score = final_score;
+                    scored.push((final_score, cmd));
                 }
             }
         }

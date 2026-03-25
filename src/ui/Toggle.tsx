@@ -1,4 +1,4 @@
-import "./Toggle.css";
+import { Toggle as BaseToggle } from "@base/primitives/toggle/Toggle";
 
 interface ToggleProps {
   checked: boolean;
@@ -8,14 +8,10 @@ interface ToggleProps {
 
 export function Toggle({ checked, onChange, disabled }: ToggleProps) {
   return (
-    <button
-      className={`emit-toggle ${checked ? "on" : ""}`}
-      onClick={() => !disabled && onChange(!checked)}
-      role="switch"
-      aria-checked={checked}
+    <BaseToggle
+      checked={checked}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.checked)}
       disabled={disabled}
-    >
-      <span className="emit-toggle-thumb" />
-    </button>
+    />
   );
 }

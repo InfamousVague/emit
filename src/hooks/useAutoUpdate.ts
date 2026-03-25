@@ -1,18 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { getSettings } from "../lib/tauri";
 
+type UpdatePhase = "idle" | "available" | "downloading" | "ready" | "error";
+
 interface UpdateState {
-  available: boolean;
+  phase: UpdatePhase;
   version: string | null;
-  downloading: boolean;
+  progress: number;
   dismissed: boolean;
+  error: string | null;
 }
 
 export interface UseAutoUpdateReturn {
   update: UpdateState;
-  installUpdate: () => Promise<void>;
+  cancelDownload: () => void;
+  relaunchApp: () => Promise<void>;
   dismissUpdate: () => void;
   checkNow: () => Promise<void>;
 }
@@ -21,21 +25,62 @@ const POLL_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
 
 export function useAutoUpdate(): UseAutoUpdateReturn {
   const [state, setState] = useState<UpdateState>({
-    available: false,
+    phase: "idle",
     version: null,
-    downloading: false,
+    progress: 0,
     dismissed: false,
+    error: null,
   });
   const updateRef = useRef<Update | null>(null);
+  const cancelledRef = useRef(false);
+
+  const startDownload = useCallback(async () => {
+    const update = updateRef.current;
+    if (!update) return;
+
+    cancelledRef.current = false;
+    setState((prev) => ({ ...prev, phase: "downloading", progress: 0, error: null }));
+
+    let contentLength = 0;
+    let downloaded = 0;
+
+    try {
+      await update.downloadAndInstall((event) => {
+        if (cancelledRef.current) return;
+
+        switch (event.event) {
+          case "Started":
+            contentLength = event.data.contentLength ?? 0;
+            break;
+          case "Progress": {
+            downloaded += event.data.chunkLength;
+            const pct = contentLength > 0 ? Math.min((downloaded / contentLength) * 100, 100) : 0;
+            setState((prev) => ({ ...prev, progress: pct }));
+            break;
+          }
+          case "Finished":
+            setState((prev) => ({ ...prev, phase: "ready", progress: 100 }));
+            break;
+        }
+      });
+
+      if (!cancelledRef.current) {
+        setState((prev) => ({ ...prev, phase: "ready", progress: 100 }));
+      }
+    } catch (e) {
+      if (!cancelledRef.current) {
+        console.warn("Update download failed:", e);
+        setState((prev) => ({ ...prev, phase: "error", error: String(e) }));
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
+    let unmounted = false;
     let intervalId: ReturnType<typeof setInterval>;
 
     async function checkOnce() {
-      // Skip update checks in dev mode — version mismatch always triggers false positives
       if (import.meta.env.DEV) return;
-      // Already found an update — skip further checks
       if (updateRef.current) return;
 
       try {
@@ -47,13 +92,15 @@ export function useAutoUpdate(): UseAutoUpdateReturn {
 
       try {
         const update = await check();
-        if (update && !cancelled) {
+        if (update && !unmounted) {
           updateRef.current = update;
           setState((prev) => ({
             ...prev,
-            available: true,
+            phase: "available",
             version: update.version,
           }));
+          // Auto-download immediately
+          startDownload();
         }
       } catch (e) {
         console.warn("Update check failed:", e);
@@ -64,21 +111,18 @@ export function useAutoUpdate(): UseAutoUpdateReturn {
     intervalId = setInterval(checkOnce, POLL_INTERVAL_MS);
 
     return () => {
-      cancelled = true;
+      unmounted = true;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [startDownload]);
 
-  const installUpdate = async () => {
-    if (!updateRef.current) return;
-    setState((prev) => ({ ...prev, downloading: true }));
-    try {
-      await updateRef.current.downloadAndInstall();
-      await relaunch();
-    } catch (e) {
-      console.warn("Update install failed:", e);
-      setState((prev) => ({ ...prev, downloading: false }));
-    }
+  const cancelDownload = () => {
+    cancelledRef.current = true;
+    setState((prev) => ({ ...prev, phase: "available", progress: 0 }));
+  };
+
+  const relaunchApp = async () => {
+    await relaunch();
   };
 
   const dismissUpdate = () => {
@@ -93,15 +137,16 @@ export function useAutoUpdate(): UseAutoUpdateReturn {
         updateRef.current = update;
         setState((prev) => ({
           ...prev,
-          available: true,
+          phase: "available",
           version: update.version,
           dismissed: false,
         }));
+        startDownload();
       }
     } catch (e) {
       console.warn("Update check failed:", e);
     }
   };
 
-  return { update: state, installUpdate, dismissUpdate, checkNow };
+  return { update: state, cancelDownload, relaunchApp, dismissUpdate, checkNow };
 }

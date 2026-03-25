@@ -22,7 +22,7 @@ impl CommandProvider for ClipboardProvider {
             id: "clipboard.open".into(),
             name: "Clipboard".into(),
             description: "View and search clipboard history".into(),
-            category: "Extensions".into(),
+            category: "Productivity".into(),
             icon: None,
             match_indices: vec![],
             score: 0,

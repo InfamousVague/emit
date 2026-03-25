@@ -8,6 +8,9 @@ import { Screenshot } from "./Screenshot/Screenshot";
 import { NotionView } from "./NotionView/NotionView";
 import { ParamWizard } from "./ParamWizard/ParamWizard";
 import { PerfDashboard } from "./PerfMonitor/PerfDashboard";
+import { PortPilot } from "./PortPilot/PortPilot";
+import { EnvVault } from "./EnvVault/EnvVault";
+import { Bitwarden } from "./Bitwarden/Bitwarden";
 import { CommandMode } from "./CommandMode/CommandMode";
 import { FollowUpBar } from "./CommandMode/FollowUpBar";
 import { UndoToast } from "./CommandMode/UndoToast";
@@ -36,7 +39,10 @@ type View =
   | "password-generator"
   | "window-manager"
   | "screenshot"
-  | "perf";
+  | "perf"
+  | "port-pilot"
+  | "env-vault"
+  | "bitwarden";
 
 interface AppViewRouterProps {
   view: View;
@@ -192,6 +198,36 @@ export const AppViewRouter = memo(function AppViewRouter({
     );
   }
 
+  if (view === "port-pilot") {
+    return (
+      <PortPilot
+        filter={query}
+        onBack={onBack}
+        onTrailingChange={onTrailingChange}
+      />
+    );
+  }
+
+  if (view === "env-vault") {
+    return (
+      <EnvVault
+        filter={query}
+        onBack={onBack}
+        onTrailingChange={onTrailingChange}
+      />
+    );
+  }
+
+  if (view === "bitwarden") {
+    return (
+      <Bitwarden
+        filter={query}
+        onBack={onBack}
+        onTrailingChange={onTrailingChange}
+      />
+    );
+  }
+
   if (view === "perf") {
     return (
       <PerfDashboard
@@ -271,7 +307,7 @@ export const AppViewRouter = memo(function AppViewRouter({
                 selectedIndex={selectedIndex}
                 globalOffset={groupOffset}
                 onItemClick={onItemClick}
-                perfHistory={category === "Performance" ? perfHistory : undefined}
+                perfHistory={category === "Developer Tools" ? perfHistory : undefined}
               />
             );
           })

@@ -22,6 +22,10 @@ use extensions::perf_monitor::{PerfMonitorProvider, SharedAlertConfig};
 use extensions::perf_store::SharedMetricsStore;
 use extensions::window_management::{SharedWmState, WmState, WindowManagementProvider};
 use extensions::screenshot::ScreenshotProvider;
+use extensions::port_pilot::PortPilotProvider;
+use extensions::bitwarden::{BitwardenProvider, BitwardenSession, SharedBwSession};
+
+use extensions::env_vault::EnvVaultProvider;
 use extensions::ruler::RulerProvider;
 use extensions::registry::ExtensionRegistry;
 use frecency::FrecencyTracker;
@@ -31,8 +35,10 @@ use undo::UndoStack;
 use providers::{
     applications::ApplicationProvider,
     builtin::BuiltinProvider,
+    calculator::CalculatorProvider,
     clipboard::ClipboardProvider,
     files::FileSearchProvider,
+    web_search::WebSearchProvider,
     CommandProvider,
 };
 use tauri::Manager;
@@ -100,9 +106,13 @@ pub fn run() {
             let metrics_store: SharedMetricsStore =
                 Arc::new(RwLock::new(extensions::perf_store::MetricsStore::load_from_disk()));
 
+            // Bitwarden session (created early so provider can reference it)
+            let bw_session: SharedBwSession =
+                Arc::new(RwLock::new(BitwardenSession::load()));
+
             // Build command registry with all providers
             let mut registry = CommandRegistry::new();
-            let providers = build_providers(Arc::clone(&ext_registry), Arc::clone(&metrics_store));
+            let providers = build_providers(Arc::clone(&ext_registry), Arc::clone(&metrics_store), Arc::clone(&bw_session));
 
             // Collect shortcuts from all providers before registering them
             let saved = settings::Settings::load();
@@ -119,6 +129,8 @@ pub fn run() {
             let vault_session: SharedVaultSession =
                 Arc::new(RwLock::new(VaultSession::default()));
             app.manage(vault_session);
+
+            app.manage(bw_session);
 
             // Window management state (tracks last-focused window)
             let wm_state: SharedWmState = Arc::new(RwLock::new(WmState::default()));
@@ -222,6 +234,8 @@ pub fn run() {
             commands::search_static,
             commands::execute_command,
             commands::hide_window,
+            commands::quick_look,
+            commands::reveal_in_finder,
             commands::get_settings,
             commands::save_settings,
             commands::get_clipboard_history,
@@ -289,6 +303,30 @@ pub fn run() {
             extensions::ruler::ruler_detect_edges,
             extensions::ruler::ruler_copy_measurements,
             extensions::ruler::ruler_screenshot_overlay,
+            // Port pilot
+            extensions::port_pilot::port_list_listeners,
+            extensions::port_pilot::port_kill_process,
+            extensions::port_pilot::port_get_groups,
+            // Bitwarden
+            extensions::bitwarden::bw_status,
+            extensions::bitwarden::bw_unlock,
+            extensions::bitwarden::bw_lock,
+            extensions::bitwarden::bw_is_unlocked,
+            extensions::bitwarden::bw_search,
+            extensions::bitwarden::bw_get_password,
+            extensions::bitwarden::bw_get_username,
+            extensions::bitwarden::bw_get_totp,
+            extensions::bitwarden::bw_copy_to_clipboard,
+            extensions::bitwarden::bw_unlock_and_copy,
+            extensions::bitwarden::bw_get_lock_timeout,
+            extensions::bitwarden::bw_set_lock_timeout,
+            // Env vault
+            extensions::env_vault::env_vault_get_config,
+            extensions::env_vault::env_vault_save_config,
+            extensions::env_vault::env_vault_scan,
+            extensions::env_vault::env_vault_read_file,
+            extensions::env_vault::env_vault_update_var,
+            extensions::env_vault::env_vault_open_dir,
             // Performance monitor
             extensions::perf_monitor::perf_get_snapshot,
             extensions::perf_monitor::perf_get_history,
@@ -307,6 +345,7 @@ pub fn run() {
 fn build_providers(
     ext_registry: Arc<RwLock<ExtensionRegistry>>,
     metrics_store: SharedMetricsStore,
+    bw_session: SharedBwSession,
 ) -> Vec<Box<dyn CommandProvider>> {
     vec![
         Box::new(BuiltinProvider::new()),
@@ -319,7 +358,12 @@ fn build_providers(
         Box::new(WindowManagementProvider::new()),
         Box::new(ScreenshotProvider::new()),
         Box::new(RulerProvider::new()),
+        Box::new(PortPilotProvider::new()),
+        Box::new(EnvVaultProvider::new()),
+        Box::new(BitwardenProvider::new(bw_session)),
         Box::new(PerfMonitorProvider::with_store(metrics_store)),
+        Box::new(CalculatorProvider::new()),
+        Box::new(WebSearchProvider::new()),
     ]
 }
 

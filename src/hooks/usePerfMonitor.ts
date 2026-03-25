@@ -21,9 +21,15 @@ export function usePerfMonitor() {
 
   const trimHistory = useCallback(
     (items: MetricSnapshot[]): MetricSnapshot[] => {
-      const cutoff =
-        Date.now() / 1000 - TIME_RANGE_SECONDS[timeRangeRef.current];
-      return items.filter((s) => s.timestamp >= cutoff);
+      const cutoffMs =
+        Date.now() - TIME_RANGE_SECONDS[timeRangeRef.current] * 1000;
+      const filtered = items.filter((s) => s.timestamp >= cutoffMs);
+      // Hard cap to prevent unbounded growth regardless of time filtering
+      const MAX_HISTORY = 1800; // 15 min at 2/sec
+      if (filtered.length > MAX_HISTORY) {
+        return filtered.slice(filtered.length - MAX_HISTORY);
+      }
+      return filtered;
     },
     [],
   );
